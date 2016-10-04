@@ -1,0 +1,2 @@
+#source "$BR2_EXTERNAL/hello/Config.in"
+#source "$BR2_EXTERNAL/packages/*/Config.in"
