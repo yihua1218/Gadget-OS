@@ -1,0 +1,2 @@
+source "$BR2_EXTERNAL_GADGETOS_PATH/packages/rtl8723bs_mp_driver/Config.in"
+#source "$BR2_EXTERNAL_GADGETOS/packages/*/Config.in"

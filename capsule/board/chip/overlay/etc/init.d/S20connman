@@ -1,5 +1,0 @@
-#!/bin/sh
-
-CONNMANCTL=/usr/bin/connmanctl
-
-${CONNMANCTL} enable wifi
