@@ -467,7 +467,7 @@ index 708ab17..91dfa04 100644
 +        BOOTCMD_SUNXI_COMPAT \
 +        "usbnet_devaddr=de:ad:be:af:00:01\0" \
 +        "mtdids=nand0=sunxi-nand.0\0" \
-+        "mtdparts=mtdparts=sunxi-nand.0:256k(spl0),256k(spl1),256k(spl2),256k(spl3),256k(spl4),256k(spl5),256k(spl6),256k(spl7),64m(ubi\0" \
++        "mtdparts=mtdparts=sunxi-nand.0:256k(spl0),256k(spl1),256k(spl2),256k(spl3),256k(spl4),256k(spl5),256k(spl6),256k(spl7),128m(ubi)\0" \
 +        "distro_bootcmd=for target in ${boot_targets}; do run bootcmd_${target}; done\0" \
 +        "bootargs=lpj=5009408 quiet ubi.fm_autoconvert=1\0" \
 +        "bootdelay=1\0" \

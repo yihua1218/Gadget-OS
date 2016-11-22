@@ -13,10 +13,10 @@ if [ "${2}" == "--bootloader" ]; then
 	IMAGE_TYPE="${3:-Toshiba-SLC-4G-TC58NVG2S0H}"
 	FLASH_SPL=true
 	FLASH_UBOOT=true
-fi
 
-# sunxi-fel uboot ${BR_OUTPUT_DIR}/images/u-boot-sunxi-with-spl.bin
-# sleep 4
+	sunxi-fel uboot ${BR_OUTPUT_DIR}/images/u-boot-sunxi-with-spl.bin
+	sleep 4
+fi
 
 if [ -n "${IMAGE_TYPE}" ]; then
         IMAGE_CONFIG_FILE="${BOARD_DIR}/configs/nand/${IMAGE_TYPE}.config"
