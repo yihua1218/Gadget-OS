@@ -1,5 +1,5 @@
 if [ -n "${1}" ]; then
-	task="${1}"
+	task="${@}"
 else
 	task="make"
 fi
