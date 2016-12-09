@@ -1,0 +1,30 @@
+if [ -n "${1}" ]; then
+	task="${1}"
+else
+	task="make"
+fi
+
+GADGET_DIR="$(pwd)/"
+IMAGE_DIR="$(pwd)/output/images"
+
+if [ -z "${GADGET_DIR}/gadget" ] || [ -z "${IMAGE_DIR}" ]; then
+	echo "You seem to be running this from the wrong directory."
+	echo "Please run from the gadget-os git root."
+	exit 1
+fi
+
+docker run \
+	--rm \
+	--env BR2_DL_DIR=/opt/dlcache/ \
+	--env BR2_CCACHE_DIR=/opt/ccache/ \
+	--volume=gadget-build-dlcache:/opt/dlcache/ \
+	--volume=gadget-build-ccache:/opt/ccache/ \
+	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+	--volume=gadget-build-output:/opt/gadget-os-proto/output \
+	--volume=${IMAGE_DIR}:/opt/gadget-os-proto/output/images \
+	--name=gadget-build-task \
+	-w="/opt/gadget-os-proto" \
+	-t \
+	-i \
+	gadget-build-container \
+	${task}

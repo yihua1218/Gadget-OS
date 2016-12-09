@@ -1,9 +1,11 @@
 TOP=$(CURDIR)
 OUTPUT_DIR=$(TOP)/output
 BR_DIR=$(TOP)/buildroot
-BR2_DL_DIR=$(HOME)/.br2_download_cache
+export BR2_DL_DIR?=$(HOME)/.br2_download_cache
+export BR2_CCACHE_DIR?=$(HOME)/.br2_ccache
+export BR2_EXTERNAL=$(CURDIR)/gadget
 
-export BR2_EXTERNAL_GADGETOS_PATH=$(CURDIR)/gadget
+# export BR2_EXTERNAL_GADGETOS_PATH=$(CURDIR)/gadget
 
 all:
 	@make -C $(BR_DIR) O=$(OUTPUT_DIR)
