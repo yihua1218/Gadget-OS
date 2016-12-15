@@ -42,6 +42,7 @@ https://docs.docker.com/docker-for-mac/
 ```
 git clone https://github.com/nextthingco/gadget-os-proto
 cd gadget-os-proto
+git submodule update --init --recursive
 ```
 
 #### Create docker image for building gadgetos
