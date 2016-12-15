@@ -19,9 +19,9 @@ docker run \
 	--env BR2_CCACHE_DIR=/opt/ccache/ \
 	--volume=gadget-build-dlcache:/opt/dlcache/ \
 	--volume=gadget-build-ccache:/opt/ccache/ \
+	--volume=gadget-build-output:/opt/output \
+	--volume=${IMAGE_DIR}:/opt/output/images \
 	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
-	--volume=gadget-build-output:/opt/gadget-os-proto/output \
-	--volume=${IMAGE_DIR}:/opt/gadget-os-proto/output/images \
 	--name=gadget-build-task \
 	-w="/opt/gadget-os-proto" \
 	-t \

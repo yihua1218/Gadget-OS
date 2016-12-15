@@ -15,6 +15,7 @@ RUN apt -y install unzip
 RUN apt -y install ncurses-dev
 RUN apt -y install python
 RUN apt -y install android-tools-fsutils
+RUN apt -y install lzop
 RUN locale-gen en_US.UTF-8 && \
 	echo 'LANG="en_US.UTF-8"' > /etc/default/locale
 ENV LANG en_US.utf8
