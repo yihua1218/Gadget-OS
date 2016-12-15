@@ -1,8 +1,8 @@
 # gadgetos
 
-## Required build host tools
+## Install required build tools
 
-### Install sunxi-fel: client for fel bootloader on gr8, allows flashing.
+#### Install sunxi-fel and fastboot: Clients for bootloaders on gr8. These support USB flashing.
 #### linux (debian):
 ```
 # TODO: fastboot install instructions
@@ -30,19 +30,22 @@ make install
 popd
 ```
 
-### Install docker: provides containers to run your gadgetos builds
+#### Install docker: Provides containers to run your gadgetos builds
 #### linux (debian):
 https://docs.docker.com/engine/installation/linux/debian/
 #### macOS:
 https://docs.docker.com/docker-for-mac/
 
-## Get gadgetos
+## Build and flash gadgetos
+
+#### Get gadgetos source code
 ```
 git clone https://github.com/nextthingco/gadget-os-proto
 cd gadget-os-proto
+git submodule update --init --recursive
 ```
 
-#### Build base gadgetos docker image
+#### Create docker image for building gadgetos
 ```
 scripts/build-container
 ```
