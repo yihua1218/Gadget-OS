@@ -1,0 +1,3 @@
+config BR2_PACKAGE_PYTHON_CHIP_IO
+	bool "python-chip-io"
+	select BR2_PACKAGE_HOST_DTC

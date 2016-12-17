@@ -37,17 +37,17 @@ null::sysinit:/etc/init.d/S45connman start &
 null::sysinit:/etc/init.d/S50sshd start &
 null::sysinit:/etc/init.d/S80dnsmasq start &
 null::sysinit:/usr/bin/amixer -c 0 cset numid=6 4 &
-null::sysinit:/opt/bin/blink-leds &
-null::sysinit:/opt/bin/fade-pwms 0 0.5 &
-null::sysinit:/opt/bin/fade-pwms 1 1 &
+#null::sysinit:/opt/bin/blink-leds &
+#null::sysinit:/opt/bin/fade-pwms 0 0.5 &
+#null::sysinit:/opt/bin/fade-pwms 1 1 &
 null::sysinit:/usr/sbin/alsactl restore &
-null::sysinit:/usr/bin/speaker-test -c 2 -t sine &
+#null::sysinit:/usr/bin/speaker-test -c 2 -t sine &
 # now run any rc scripts
 # null::sysinit:/etc/init.d/rcS &
 
 ttyS0::respawn:/bin/sh
 # ttyGS0::respawn:/bin/sh
-ttyS1::respawn:/usr/bin/arecord -V "stereo" -r 8000 -c 2 -d 10 /dev/null
+#ttyS1::respawn:/usr/bin/arecord -V "stereo" -r 8000 -c 2 -d 10 /dev/null
 
 # Put a getty on the serial port
 # ttyS1::respawn:/sbin/getty -L ttyS1 115200 xterm # GENERIC_SERIAL
