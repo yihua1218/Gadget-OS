@@ -70,7 +70,35 @@ scripts/build-gadget make
 
 This can take an hour or more
 
+#### Start UART terminal
+
+Open a new terminal window, plug in to the dev kit's USB micro connector and start a terminal session:
+```
+screen /dev/tty.usbserial-XXX 115200 #macOS - hit tab after the '-'
+screen /dev/ttyUSB0 #linux
+```
+
 #### Flash gadgetos image to chippro
+Hold down the fel button and power up the Dev Board and
 ```
 scripts/flash-gadget
 ```
+In the other UART terminal window you'll need to enter a couple commands to get things going. When you get to the `=>` prompt enter:
+```
+=> fastboot 0
+```
+You'll get that prompt again later, then you'll need to:
+```
+=> reset
+```
+
+#### Alternatively
+If the dev kit already has a gadget OS on it and you are re-flashing, boot CHIP Pro, then open a terminal. Use the command:
+```
+gadget-enter-flashing-mode
+```
+This will reboot into a flashing mode. From your computer's command line in the gadget-os-proto docker, run the flash script:
+```
+scripts/flash-gadget
+```
+It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot. 
