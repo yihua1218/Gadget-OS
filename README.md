@@ -70,6 +70,10 @@ scripts/build-gadget make
 
 This can take an hour or more
 
+## Flash With OS
+
+Now that you have build an operating system, you can flash it to CHIP Pro.
+
 #### Start UART terminal
 
 Open a new terminal window, plug in to the dev kit's USB micro connector and start a terminal session:
@@ -103,12 +107,26 @@ scripts/flash-gadget
 ```
 It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot. 
 
+#### Update the OS and Re-flash
+
+If the repo is updated and you want to reflash, from your local repo directory, you can
+```
+git pull
+scripts/build-gadget make gadget-init-scripts-reconfigure all
+```
+Then try the "Alternatively" procedure above to reflash.
+
 ## Try it!
+There are some examples on the system you just flashed. 
+
+#### Blinkenlights
 Try the blinking lights example. From CHIP Pro's prompt:
 ```
 blink-leds
 ```
-This blinks the 8 LEDs on CHIP's GPIO.
+This blinks the 8 LEDs on CHIP's GPIO in various patterns.
+
+#### VU meter
 
 Now try the VU meter example
 ```
