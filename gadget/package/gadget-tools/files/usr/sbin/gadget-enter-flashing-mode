@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "GADGET: Putting device into flashing mode."
+/usr/sbin/fw_setenv bootcmd 'fastboot 0; reset;'
+/sbin/reboot

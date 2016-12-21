@@ -1,0 +1,31 @@
+#!/bin/sh
+RETVAL=0
+
+start() {
+	/sbin/modprobe sun4i-codec
+	/usr/sbin/alsactl restore
+	/usr/bin/amixer -c 0 cset numid=6 4
+}
+
+stop() {
+}
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $processname
+        RETVAL=$?
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        ;;
+esac
+exit $RETVAL

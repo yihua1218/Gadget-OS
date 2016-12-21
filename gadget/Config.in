@@ -1,3 +1,6 @@
+source "$BR2_EXTERNAL_GADGETOS_PATH/package/demo-blinkenlights/Config.in"
+source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadget-init-scripts/Config.in"
+source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadget-tools/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/dtc-overlay/Config.in.host"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/rtl8723bs_mp_driver/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/rtl8723ds_mp_driver/Config.in"

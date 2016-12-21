@@ -1,0 +1,2 @@
+config BR2_PACKAGE_GADGET_INIT_SCRIPTS
+	bool "gadget-init-scripts"

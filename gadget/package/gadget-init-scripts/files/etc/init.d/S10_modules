@@ -1,0 +1,47 @@
+#!/bin/sh
+
+MODPROBE=/sbin/modprobe
+RETVAL=0
+
+start() {
+	echo -n "Probing modules: "
+	if [ ! -x "${MODPROBE}" -o ! -f "/etc/modules" ]; then
+		echo "missing"
+		exit 1
+	else
+		echo
+	fi
+
+	grep '^[^#]' "/etc/modules" | \
+	while read module args; do
+		[ "$module" ] || continue
+		if ${MODPROBE} $module $args; then
+			echo "  $module loaded"
+		else
+			echo "  $module failed"
+		fi
+	done
+}
+
+stop() {
+}
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status $processname
+		RETVAL=$?
+		;;
+	restart)
+		stop
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|status|restart}"
+		;;
+esac
+exit $RETVAL
