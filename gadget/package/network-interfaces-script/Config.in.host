@@ -1,0 +1,5 @@
+config BR2_PACKAGE_HOST_NETWORK_INTERFACES_SCRIPT
+	bool "host-network-interfaces-script"
+	default n
+	help
+		Helps to setup interfaces in /etc/network/interfaces.
