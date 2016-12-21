@@ -72,7 +72,7 @@ This can take an hour or more
 
 ## Flash With OS
 
-Now that you have build an operating system, you can flash it to CHIP Pro.
+Now that you have built an operating system, you can flash it to CHIP Pro.
 
 #### Start UART terminal
 
