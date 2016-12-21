@@ -49,6 +49,9 @@ git submodule update --init --recursive
 ```
 scripts/build-container
 ```
+
+On OS X, you'll need to launch the Docker application from your Applications folder before you can run these scripts.
+
 #### Build gadgetos base buildroot defconfig
 ```
 scripts/build-gadget make chippro_defconfig
