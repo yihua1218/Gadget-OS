@@ -55,7 +55,7 @@ scripts/build-container
 
 On macOS, you'll need to launch the Docker application from your Applications folder before you can run these scripts. This can take about 10-15 minutes, depending on your computer.
 
-## Create gadgetos config file
+### Create gadgetos config file
 
 The heart of your gadgetos is the config file. You can create a starting point, depending on what you want your CHIP Pro to do. We have already created a few examples - here are the commands to generate the config for each:
 
@@ -78,7 +78,7 @@ If you want to add some capabilities to the kernel, you can use an ncurses UI to
 scripts/build-gadget make linux-nconfig
 ```
 
-#### Make gadgetos
+### Make gadgetos
 Now you are ready to build!
 
 ```
