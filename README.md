@@ -2,7 +2,10 @@
 
 ## Install required build tools
 
-#### Install sunxi-fel and fastboot: Clients for bootloaders on gr8. These support USB flashing.
+#### Install sunxi-fel and fastboot 
+
+Clients for bootloaders on gr8. These support USB flashing.
+
 #### linux (debian):
 ```
 # TODO: fastboot install instructions
@@ -50,25 +53,39 @@ git submodule update --init --recursive
 scripts/build-container
 ```
 
-On OS X, you'll need to launch the Docker application from your Applications folder before you can run these scripts. This can take about 10-15 minutes, depending on your computer.
+On macOS, you'll need to launch the Docker application from your Applications folder before you can run these scripts. This can take about 10-15 minutes, depending on your computer.
 
-#### Build gadgetos base buildroot defconfig
-```
-scripts/build-gadget make chippro_defconfig
-```
+## Create gadgetos config file
 
-This takes less than a minute.
+The heart of your gadgetos is the config file. You can create a starting point, depending on what you want your CHIP Pro to do. We have already created a few examples - here are the commands to generate the config for each:
 
-#### [optional] Override base defconfig using ncurses utility. You'll know if you need this.
+* Default - `scripts/build-gadget make chippro_defconfig`
+* Blinkenlights - `scripts/build-gadget make chippro_blinkenlights`
+* Mic Recorder - `scripts/build-gadget make chippro_micrecorder`
+* Access Point - `scripts/build-gadget make chippro_wirelessap`
+
+Creating this config file takes less than a minute.
+
+#### [optional] Customize your configuration
+If you want to add some capabilities to the default rootfs, you can use an ncurses UI to navigate the many options of buildroot:
 ```
 scripts/build-gadget make nconfig
 ```
-#### Build gadgetos
+
+#### [optional] Customize your kernel
+If you want to add some capabilities to the kernel, you can use an ncurses UI to navigate the many options:
+```
+scripts/build-gadget make linux-nconfig
+```
+
+#### Make gadgetos
+Now you are ready to build!
+
 ```
 scripts/build-gadget make
 ```
 
-This can take an hour or more
+This can take an hour or more.
 
 ## Flash With OS
 
@@ -83,6 +100,7 @@ screen /dev/ttyUSB0 #linux
 ```
 
 #### Flash gadgetos image to chippro
+
 Hold down the fel button and power up the Dev Board and
 ```
 scripts/flash-gadget
@@ -117,9 +135,11 @@ scripts/build-gadget make gadget-init-scripts-reconfigure all
 Then try the "Alternatively" procedure above to reflash.
 
 ## Try it!
+
 There are some examples on the system you just flashed. 
 
 #### Blinkenlights
+
 Try the blinking lights example. From CHIP Pro's prompt:
 ```
 blink-leds
