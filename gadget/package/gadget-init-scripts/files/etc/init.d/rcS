@@ -6,10 +6,10 @@
 #
 for i in /etc/init.d/S??* ;do
 
-	 # Ignore dangling symlinks (if any).
-	 [ ! -f "$i" ] && continue
+	# Ignore dangling symlinks (if any).
+	[ ! -f "$i" ] && continue
 
 	# No sh extension, so fork subprocess.
-	nohup $i start &
+	$i start
 done
 

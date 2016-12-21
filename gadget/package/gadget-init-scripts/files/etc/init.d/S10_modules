@@ -24,7 +24,9 @@ start() {
 }
 
 stop() {
+	echo "Nothing to do"
 }
+
 case "$1" in
 	start)
 		start

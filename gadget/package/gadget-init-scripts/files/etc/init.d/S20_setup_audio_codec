@@ -8,24 +8,26 @@ start() {
 }
 
 stop() {
+	echo "Nothing to do"
 }
+
 case "$1" in
-    start)
-        start
-        ;;
-    stop)
-        stop
-        ;;
-    status)
-        status $processname
-        RETVAL=$?
-        ;;
-    restart)
-        stop
-        start
-        ;;
-    *)
-        echo "Usage: $0 {start|stop|status|restart}"
-        ;;
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status $processname
+		RETVAL=$?
+		;;
+	restart)
+		stop
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|status|restart}"
+		;;
 esac
 exit $RETVAL
