@@ -50,12 +50,15 @@ git submodule update --init --recursive
 scripts/build-container
 ```
 
-On OS X, you'll need to launch the Docker application from your Applications folder before you can run these scripts.
+On OS X, you'll need to launch the Docker application from your Applications folder before you can run these scripts. This can take about 10-15 minutes, depending on your computer.
 
 #### Build gadgetos base buildroot defconfig
 ```
 scripts/build-gadget make chippro_defconfig
 ```
+
+This takes less than a minute.
+
 #### [optional] Override base defconfig using ncurses utility. You'll know if you need this.
 ```
 scripts/build-gadget make nconfig
@@ -64,6 +67,9 @@ scripts/build-gadget make nconfig
 ```
 scripts/build-gadget make
 ```
+
+This can take an hour or more
+
 #### Flash gadgetos image to chippro
 ```
 scripts/flash-gadget
