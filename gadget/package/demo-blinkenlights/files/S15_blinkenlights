@@ -1,0 +1,35 @@
+#!/bin/sh
+
+MODPROBE=/sbin/modprobe
+RETVAL=0
+
+start() {
+	nohup blink-leds &
+	nohup fade-pwms 0 0.5 &
+	nohup fade-pwms 1 1 &
+}
+
+stop() {
+	echo "Nothing to do"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status $processname
+		RETVAL=$?
+		;;
+	restart)
+		stop
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|status|restart}"
+		;;
+esac
+exit $RETVAL
