@@ -1,0 +1,3 @@
+#!/bin/sh
+/bin/stty -F /dev/ttyS1 115200
+# /bin/stty -F /dev/ttyGS0 115200

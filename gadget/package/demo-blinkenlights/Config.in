@@ -1,0 +1,2 @@
+config BR2_PACKAGE_DEMO_BLINKENLIGHTS
+	bool "demo-blinkenlights"

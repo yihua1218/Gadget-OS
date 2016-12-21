@@ -16,9 +16,7 @@ fi
 docker run \
 	--rm \
 	--env BR2_DL_DIR=/opt/dlcache/ \
-	--env BR2_CCACHE_DIR=/opt/ccache/ \
 	--volume=gadget-build-dlcache:/opt/dlcache/ \
-	--volume=gadget-build-ccache:/opt/ccache/ \
 	--volume=gadget-build-output:/opt/output \
 	--volume=${IMAGE_DIR}:/opt/output/images \
 	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
@@ -28,3 +26,7 @@ docker run \
 	-i \
 	gadget-build-container \
 	${task}
+
+
+#	--env BR2_CCACHE_DIR=/opt/ccache/ \
+#	--volume=gadget-build-ccache:/opt/ccache/ \
