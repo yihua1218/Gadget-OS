@@ -102,3 +102,17 @@ This will reboot into a flashing mode. From your computer's command line in the 
 scripts/flash-gadget
 ```
 It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot. 
+
+## Try it!
+Try the blinking lights example. From CHIP Pro's prompt:
+```
+blink-leds
+```
+This blinks the 8 LEDs on CHIP's GPIO.
+
+Now try the VU meter example
+```
+/opt/bin/vu-meter
+```
+Scream loudly, speak softly, tap the mics, and MAKE SOME NOISE, SPORTSFANS!. You'll see the LEDs light, proporitional to the volume of the noise.
+
