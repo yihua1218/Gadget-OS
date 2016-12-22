@@ -1,0 +1,9 @@
+config BR2_PACKAGE_ETH_USB_GADGET
+	bool "eth_usb_gadget"
+	select BR2_PACKAGE_SKELETON
+	select BR2_PACKAGE_DNSMASQ
+	select BR2_PACKAGE_DNSMASQ_DHCP
+	default n
+	help
+		Requires an ethernet usb gadget to be enabled in the kernel.\
+		Sets up /etc/network/interfaces and dnsmasq.
