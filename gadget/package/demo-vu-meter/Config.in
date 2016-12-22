@@ -1,0 +1,2 @@
+config BR2_PACKAGE_DEMO_VU_METER
+	bool "demo-vu-meter"
