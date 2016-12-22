@@ -2,7 +2,7 @@
 
 ## Install required build tools
 
-#### Install sunxi-fel and fastboot 
+#### Install sunxi-fel and fastboot
 
 Clients for bootloaders on gr8. These support USB flashing.
 
@@ -34,6 +34,9 @@ popd
 ```
 
 #### Install docker: Provides containers to run your gadgetos builds
+#### linux (Ubuntu):
+https://docs.docker.com/engine/installation/linux/ubuntulinux/ 
+
 #### linux (debian):
 https://docs.docker.com/engine/installation/linux/debian/
 #### macOS:
@@ -123,7 +126,7 @@ This will reboot into a flashing mode. From your computer's command line in the 
 ```
 scripts/flash-gadget
 ```
-It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot. 
+It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot.
 
 #### Update the OS and Re-flash
 
@@ -140,7 +143,7 @@ Then try the "Alternatively" procedure above to reflash.
 
 ## Try it!
 
-There are some examples on the system you just flashed. 
+There are some examples on the system you just flashed.
 
 #### Blinkenlights
 
@@ -157,4 +160,3 @@ Now try the VU meter example
 /opt/bin/vu-meter
 ```
 Scream loudly, speak softly, tap the mics, and MAKE SOME NOISE, SPORTSFANS!. You'll see the LEDs light, proporitional to the volume of the noise.
-
