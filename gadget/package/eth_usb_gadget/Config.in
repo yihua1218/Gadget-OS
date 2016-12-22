@@ -3,6 +3,7 @@ config BR2_PACKAGE_ETH_USB_GADGET
 	select BR2_PACKAGE_SKELETON
 	select BR2_PACKAGE_DNSMASQ
 	select BR2_PACKAGE_DNSMASQ_DHCP
+    select BR2_PACKAGE_HOST_NETWORK_INTERFACES_SCRIPT
 	default n
 	help
 		Requires an ethernet usb gadget to be enabled in the kernel.\
