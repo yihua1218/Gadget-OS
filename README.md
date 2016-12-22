@@ -60,9 +60,9 @@ On macOS, you'll need to launch the Docker application from your Applications fo
 The heart of your gadgetos is the config file. You can create a starting point, depending on what you want your CHIP Pro to do. We have already created a few examples - here are the commands to generate the config for each:
 
 * Default - `scripts/build-gadget make chippro_defconfig`
-* Blinkenlights - `scripts/build-gadget make chippro_blinkenlights`
-* Mic Recorder - `scripts/build-gadget make chippro_micrecorder`
-* Access Point - `scripts/build-gadget make chippro_wirelessap`
+* Blinkenlights - `scripts/build-gadget make chippro_blinkenlights_defconfig`
+* Mic Recorder - `scripts/build-gadget make chippro_micrecorder_defconfig`
+* Access Point - `scripts/build-gadget make chippro_wirelessap_defconfig`
 
 Creating this config file takes less than a minute.
 
@@ -127,11 +127,15 @@ It will complaing that FEL device is not found, then after a few seconds, begin 
 
 #### Update the OS and Re-flash
 
-If the repo is updated and you want to reflash, from your local repo directory, you can
+If the repo is updated and you want to reflash, from your local repo directory, you can use the appropriate arguments to `make` :
 ```
 git pull
-scripts/build-gadget make gadget-init-scripts-reconfigure all
+scripts/build-gadget make gadget-init-scripts-reconfigure all # for default
+scripts/build-gadget make demo-blinkenlights-reconfigure all # ... blinkenlights
+scripts/build-gadget make demo-micrecorder-reconfigure all # ... micrecorder
+scripts/build-gadget make demo-wirelessap-reconfigure all # ... wirelessap
 ```
+
 Then try the "Alternatively" procedure above to reflash.
 
 ## Try it!
