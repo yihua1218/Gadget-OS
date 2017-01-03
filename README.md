@@ -92,7 +92,7 @@ This can take an hour or more.
 
 ## Flash With OS
 
-Now that you have built an operating system, you can flash it to CHIP Pro.
+Now that you have built an operating system, you can flash it to CHIP Pro. If you want this to work, you'll need to either quit the Chrome browser that has an active C.H.I.P. Flasher extension, or disable it from the Extensions control panel in Chrome (3-dot menu/More Tools/Extensions).
 
 #### Start UART terminal
 
