@@ -100,7 +100,7 @@ Hold down the fel button and power up the Dev Board and
 ```
 scripts/flash-gadget
 ```
-The image will flash to the CHIP Pro and you'll be able to cycle power and start using it over UART.
+The image will flash to the CHIP Pro. Once flashing has finished, you can connect via UART and start using it.
 
 #### Alternatively
 If the dev kit already has a gadget OS on it and you are re-flashing, boot CHIP Pro, then open a terminal. Use the command:
