@@ -37,8 +37,8 @@ if [ -n "${IMAGE_TYPE}" ]; then
 	echo "SPL: $spl"
 	if $FLASH_SPL; then
 		fastboot -i 0x1f3a erase spl
-		fastboot -i 0x1f3a flash spl ${BR_OUTPUT_DIR}/images/$spl
 		fastboot -i 0x1f3a erase spl-backup
+		fastboot -i 0x1f3a flash spl ${BR_OUTPUT_DIR}/images/$spl
 		fastboot -i 0x1f3a flash spl-backup ${BR_OUTPUT_DIR}/images/$spl
 	fi
 	
