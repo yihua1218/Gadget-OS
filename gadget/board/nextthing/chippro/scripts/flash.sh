@@ -14,7 +14,7 @@ if [ "${2}" == "--bootloader" ]; then
 	FLASH_SPL=true
 	FLASH_UBOOT=true
 
-	sunxi-fel uboot ${BR_OUTPUT_DIR}/images/u-boot-sunxi-with-spl.bin
+	sunxi-fel uboot ${BR_OUTPUT_DIR}/images/u-boot-sunxi-with-spl.bin write 0x43100000 ${BR_OUTPUT_DIR}/images/uboot.script
 	sleep 4
 fi
 
