@@ -92,15 +92,7 @@ This can take an hour or more.
 
 ## Flash With OS
 
-Now that you have built an operating system, you can flash it to CHIP Pro. If you want this to work, you'll need to either quit the Chrome browser that has an active C.H.I.P. Flasher extension, or disable it from the Extensions control panel in Chrome (3-dot menu/More Tools/Extensions).
-
-#### Start UART terminal
-
-Open a new terminal window, plug in to the dev kit's USB micro connector and start a terminal session:
-```
-screen /dev/tty.usbserial-XXX 115200 #macOS - hit tab after the '-'
-screen /dev/ttyUSB0 #linux
-```
+Now that you have built an operating system, you can flash it to CHIP Pro. 
 
 #### Flash gadgetos image to chippro
 
@@ -108,14 +100,7 @@ Hold down the fel button and power up the Dev Board and
 ```
 scripts/flash-gadget
 ```
-In the other UART terminal window you'll need to enter a couple commands to get things going. When you get to the `=>` prompt enter:
-```
-=> fastboot 0
-```
-You'll get that prompt again later, then you'll need to:
-```
-=> reset
-```
+The image will flash to the CHIP Pro. Once flashing has finished, you can connect via UART and start using it.
 
 #### Alternatively
 If the dev kit already has a gadget OS on it and you are re-flashing, boot CHIP Pro, then open a terminal. Use the command:
