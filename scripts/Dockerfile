@@ -25,4 +25,7 @@ ENV LC_ALL en_US.utf8
 RUN git clone https://github.com/linux-sunxi/sunxi-tools /opt/sunxi-tools
 RUN make -C /opt/sunxi-tools sunxi-nand-image-builder
 RUN cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin
-RUN mkdir -p /opt
+RUN mkdir -p /opt/buildroot
+RUN wget -P /opt "https://github.com/buildroot/buildroot/archive/2016.11.tar.gz"
+RUN tar -C /opt/buildroot -xzf /opt/2016.11.tar.gz --strip-components=1
+# RUN git -C /opt clone https://github.com/buildroot/buildroot.git --branch=2016.11

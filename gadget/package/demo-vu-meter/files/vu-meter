@@ -16,6 +16,7 @@ pinmap = [3,2,1,0, 4,5,6,7]
 val_max = len(pinmap)/2
 val_min = 0
 pinid = "CSID{0}"
+retry=10
 
 for x in pinmap:
 	gpio.setup(pinid.format(x), gpio.OUT)
@@ -41,7 +42,10 @@ while True:
 				else:
 					gpio.output(pinid.format(x), gpio.LOW)
 		except:
-			print("Program Closed")
-			break
+			if retry<=0:
+				print("Program Closed")
+				break
+			else:
+				retry -= 1
 
 gpio.cleanup()

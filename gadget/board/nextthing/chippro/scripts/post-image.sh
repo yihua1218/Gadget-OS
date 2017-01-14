@@ -5,7 +5,8 @@ read_config() {
 	grep "${1}=" ${BR2_CONFIG} | sed -e 's/^[A-Za-z0-9_]\+=\(.*\)$/\1/'
 }
 
-ROOT_DIR="$(pwd)/../gadget"
+# ROOT_DIR="$(pwd)/../gadget"
+ROOT_DIR="${BR2_EXTERNAL_GADGETOS_PATH}"
 BOARD_DIR=${ROOT_DIR}/board/nextthing/chippro
 
 IMAGE_TYPE="${2}"
@@ -19,7 +20,7 @@ if [ -n "${IMAGE_TYPE}" ]; then
 	fi
 
 	source "${IMAGE_CONFIG_FILE}"
-	
+
 	IMG2SIMG=$(which img2simg)
 	if [ -z "${IMG2SIMG}" ]; then
 		echo -e "ERROR: Please install 'img2simg' using your distribution's package manager."

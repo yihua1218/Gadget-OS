@@ -1,6 +1,7 @@
 #!/bin/bash
 
-ROOT_DIR="$(pwd)"
+# ROOT_DIR="$(pwd)"
+ROOT_DIR="${BR2_EXTERNAL_GADGETOS_PATH}"
 BOARD_DIR=${ROOT_DIR}/board/nextthing/chippro
 
 MKIMAGE=${HOST_DIR}/usr/bin/mkimage

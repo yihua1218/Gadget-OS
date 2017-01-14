@@ -1,6 +1,4 @@
 #!/bin/sh
-
-MODPROBE=/sbin/modprobe
 RETVAL=0
 
 start() {

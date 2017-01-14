@@ -10,7 +10,6 @@ bootm_size=0xa000000
 console=ttyS0,115200
 env_in_ubi=1
 fdt_addr_r=0x43000000
-fdtcontroladdr=4bb26508
 kernel_addr_r=0x42000000
 mtddevname=spl
 mtddevnum=0
