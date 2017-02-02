@@ -5,7 +5,7 @@ if [ -z "$(pwd)/gadget" ]; then
 	exit 1
 fi
 
-GADGET_CONTAINER=$(GADGET_CONTAINER:-gadget-build-container)
+GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
 
 docker inspect ${GADGET_CONTAINER}
 if [ ! "$?" == "0" ]; then
