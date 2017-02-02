@@ -1,3 +1,4 @@
+#!/bin/sh
 if [ -n "${1}" ]; then
 	task="${@}"
 else
@@ -6,6 +7,7 @@ fi
 
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
+GADGET_CONTAINER=$(GADGET_CONTAINER:-gadget-build-container)
 
 if [ -z "${GADGET_DIR}/gadget" ] || [ -z "${IMAGE_DIR}" ]; then
 	echo "You seem to be running this from the wrong directory."
@@ -24,7 +26,7 @@ docker run \
 	-w="/opt/gadget-os-proto" \
 	-t \
 	-i \
-	gadget-build-container \
+	${GADGET_CONTAINER} \
 	${task}
 
 

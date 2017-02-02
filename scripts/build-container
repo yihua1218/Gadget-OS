@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 if [ -z "$(pwd)/gadget" ]; then
 	echo "You seem to be running this from the wrong directory."
 	echo "Please run from the gadget-os git root."
