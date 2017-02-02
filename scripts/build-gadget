@@ -9,6 +9,11 @@ GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
 GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
 
+INTERACTIVE=""
+if [ -n "${TERM}" ]; then
+	INTERACTIVE="-it"
+fi
+
 if [ -z "${GADGET_DIR}/gadget" ] || [ -z "${IMAGE_DIR}" ]; then
 	echo "You seem to be running this from the wrong directory."
 	echo "Please run from the gadget-os git root."
@@ -24,8 +29,7 @@ docker run \
 	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
 	--name=gadget-build-task \
 	-w="/opt/gadget-os-proto" \
-	-t \
-	-i \
+	${INTERACTIVE} \
 	${GADGET_CONTAINER} \
 	${task}
 
