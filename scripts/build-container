@@ -5,7 +5,12 @@ if [ -z "$(pwd)/gadget" ]; then
 	exit 1
 fi
 
-docker build -f scripts/Dockerfile -t gadget-build-container $(pwd)
+GADGET_CONTAINER=$(GADGET_CONTAINER:-gadget-build-container)
+
+docker inspect ${GADGET_CONTAINER}
+if [ ! "$?" == "0" ]; then
+	docker build -f scripts/Dockerfile -t ${GADGET_CONTAINER} $(pwd)
+fi
 
 docker volume inspect gadget-build-ccache > /dev/null
 if [ ! "$?" == "0" ]; then
