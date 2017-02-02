@@ -18,8 +18,8 @@ build:
   stage: build
   script:
     - scripts/build-container
-    - scripts/build-gadget make chippro_docker_defconfig
-    - scripts/build-gadget make all
+    - scripts/build-gadget make -s chippro_docker_defconfig
+    - scripts/build-gadget make -s all
 
   artifacts:
     paths:
