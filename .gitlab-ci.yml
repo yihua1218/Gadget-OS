@@ -1,0 +1,20 @@
+image: nextthingco/buildroot-development-container
+
+stages:
+  - build
+
+before_script:
+  - echo "Building gadget os..."
+
+build:
+  stage: build
+  script:
+    - make chippro_docker_defconfig
+    - make
+
+  artifacts:
+    paths:
+      - output/images/rootfs.ubi.sparse
+      - output/images/spl-40000-1000-100.bin
+      - output/images/uboot-40000.bin
+      - output/images/uboot.script
