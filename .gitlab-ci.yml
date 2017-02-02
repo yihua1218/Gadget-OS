@@ -1,4 +1,4 @@
-image: nextthingco/buildroot-development-container
+image: nextthingco/buildroot-development-container:master
 
 stages:
   - build
