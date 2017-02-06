@@ -5,14 +5,17 @@ services:
 
 stages:
   - build
+  - howitzer
   - upload
 variables:
   GADGET_CONTAINER: $CI_REGISTRY/nextthingco/buildroot-development-container:master
+  HOWITZER_CONTAINER: $CI_REGISTRY/gadget/howitzer-container:master
   UPLOAD_CONTAINER: $CI_REGISTRY/nextthingco/ci-tools:stable
   ARTIFACT_0: output/images/rootfs.ubi.sparse
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
   ARTIFACT_2: output/images/uboot-40000.bin
   ARTIFACT_3: output/images/uboot.script
+  ARTIFACT_4: output/images/${CI_BUILD_REF_NAME}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-Toshiba_512_MLC.chp
 
 before_script:
   - echo "Building gadget os..."
@@ -26,12 +29,13 @@ build:
     - scripts/build-gadget make -s chippro_docker_defconfig
     - scripts/build-gadget make -s all
 
-  artifacts:
-    paths:
-      - output/images/rootfs.ubi.sparse
-      - output/images/spl-40000-1000-100.bin
-      - output/images/uboot-40000.bin
-      - output/images/uboot.script
+howitzer:
+  stage: howitzer
+  script:
+    - docker pull $HOWITZER_CONTAINER
+    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER scripts/flash-gadget
+    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/output/images/fel.chp chp /opt/images/output/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
+    - rm output/images/fel.chp output/images/fastboot.chp
 
 upload:
   stage: upload
@@ -54,4 +58,5 @@ upload:
       ${ARTIFACT_1}
       ${ARTIFACT_2}
       ${ARTIFACT_3}
+      ${ARTIFACT_4}
 
