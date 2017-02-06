@@ -52,6 +52,7 @@ upload:
       -e ARTIFACT_1=${ARTIFACT_1}
       -e ARTIFACT_2=${ARTIFACT_2}
       -e ARTIFACT_3=${ARTIFACT_3}
+      -e ARTIFACT_4=${ARTIFACT_4}
       --rm -v $PWD:/upload -w /upload
       $UPLOAD_CONTAINER ci-s3-upload
       ${ARTIFACT_0}
