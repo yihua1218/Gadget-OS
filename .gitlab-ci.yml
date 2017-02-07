@@ -28,10 +28,14 @@ build:
     - scripts/build-container
     - scripts/build-gadget make -s chippro_docker_defconfig
     - scripts/build-gadget make -s all
+    - ls -la
+    - ls output/images
 
 howitzer:
   stage: howitzer
   script:
+    - ls -la
+    - ls output/images
     - docker pull $HOWITZER_CONTAINER
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la output/images
