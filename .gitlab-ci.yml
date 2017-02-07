@@ -7,6 +7,7 @@ stages:
   - build
   - howitzer
   - upload
+
 variables:
   GADGET_CONTAINER: $CI_REGISTRY/nextthingco/buildroot-development-container:master
   HOWITZER_CONTAINER: $CI_REGISTRY/gadget/howitzer-container:master
@@ -30,10 +31,10 @@ build:
     - scripts/build-gadget make -s all
     - ls -la
     - ls output/images
-
-howitzer:
-  stage: howitzer
-  script:
+#
+#howitzer:
+#  stage: howitzer
+#  script:
     - ls -la
     - ls output/images
     - docker pull $HOWITZER_CONTAINER
