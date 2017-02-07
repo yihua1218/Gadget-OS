@@ -31,11 +31,15 @@ build:
     - scripts/build-gadget make -s all
     - ls -la
     - ls output/images
-#
+#  cache:
+#    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
+#    paths:
+#      - output/
+
 #howitzer:
 #  stage: howitzer
 #  script:
-    - ls -la
+#    - ls -la
     - ls output/images
     - docker pull $HOWITZER_CONTAINER
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la
@@ -43,10 +47,14 @@ build:
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER /bin/bash -x scripts/flash-gadget
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/output/images/fel.chp chp /opt/images/output/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
 #    - rm output/images/fel.chp output/images/fastboot.chp
+#  cache:
+#    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
+#    paths:
+#      - output/
 
-upload:
-  stage: upload
-  script:
+#upload:
+#  stage: upload
+#  script:
     - docker pull $UPLOAD_CONTAINER
     - docker run
       -e GHVAR_AWS_ID=${GHVAR_AWS_ID}
