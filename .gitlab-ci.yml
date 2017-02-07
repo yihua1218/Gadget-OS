@@ -42,7 +42,7 @@ build:
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la output/images
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER /bin/bash -x scripts/flash-gadget
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/output/images/fel.chp chp /opt/images/output/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
-    - rm output/images/fel.chp output/images/fastboot.chp
+#    - rm output/images/fel.chp output/images/fastboot.chp
 
 upload:
   stage: upload
