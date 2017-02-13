@@ -8,6 +8,7 @@ fi
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
 GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
+ENVIRONMENT_FILE=".local-env"
 
 INTERACTIVE=""
 if [ -n "${TERM}" ]; then
@@ -20,6 +21,13 @@ if [ -z "${GADGET_DIR}/gadget" ] || [ -z "${IMAGE_DIR}" ]; then
 	exit 1
 fi
 
+LOCAL_ENV=""
+if [ -f "${ENVIRONMENT_FILE}" ]; then
+	echo "Using local environment: ${ENVIRONMENT_FILE}"
+	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
+fi
+
+
 docker run \
 	--rm \
 	--env BR2_DL_DIR=/opt/dlcache/ \
@@ -29,6 +37,7 @@ docker run \
 	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
 	--name=gadget-build-task \
 	-w="/opt/gadget-os-proto" \
+	${LOCAL_ENV} \
 	${INTERACTIVE} \
 	${GADGET_CONTAINER} \
 	${task}

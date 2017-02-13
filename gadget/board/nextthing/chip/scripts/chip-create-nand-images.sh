@@ -77,7 +77,7 @@ cp $UBOOT_DIR/u-boot-dtb.bin $OUTPUT_DIR/
 
 ## prepare spl images ##
 # Toshiba SLC image:
-prepare_spl $OUTPUT_DIR $UBOOT_DIR/sunxi-spl.bin ${NAND_ERASE_BLOCK_SIZE} ${NAND_PAGE_SIZE} ${NAND_OOB_SIZE}
+prepare_spl $OUTPUT_DIR $UBOOT_DIR/sunxi-spl.bin 262144 4096 256
 # Toshiba MLC image:
 #prepare_spl $OUTPUTDIR $UBOOTDIR/spl/sunxi-spl.bin 4194304 16384 1280
 # Hynix MLC image:
@@ -85,6 +85,6 @@ prepare_spl $OUTPUT_DIR $UBOOT_DIR/sunxi-spl.bin ${NAND_ERASE_BLOCK_SIZE} ${NAND
 
 ## prepare uboot images ##
 # Toshiba SLC image:
-prepare_uboot $OUTPUT_DIR $UBOOT_DIR/u-boot-dtb.bin ${NAND_ERASE_BLOCK_SIZE}
+prepare_uboot $OUTPUT_DIR $UBOOT_DIR/u-boot-dtb.bin 262144
 # Toshiba/Hynix MLC image:
 #prepare_uboot $OUTPUTDIR $UBOOTDIR/u-boot-dtb.bin 4194304

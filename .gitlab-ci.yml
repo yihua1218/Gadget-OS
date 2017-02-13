@@ -16,7 +16,7 @@ variables:
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
   ARTIFACT_2: output/images/uboot-40000.bin
   ARTIFACT_3: output/images/uboot.script
-  ARTIFACT_4: output/images/${CI_BUILD_REF_NAME}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-Toshiba_512_MLC.chp
+  ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-Toshiba_512_MLC.chp
 
 before_script:
   - echo "Building gadget os..."
@@ -45,7 +45,7 @@ build:
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la output/images
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER /bin/bash -x scripts/flash-gadget
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/output/images/fel.chp chp /opt/images/output/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
+    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/fel.chp chp /opt/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
 #    - rm output/images/fel.chp output/images/fastboot.chp
 #  cache:
 #    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
@@ -61,7 +61,7 @@ build:
       -e GHVAR_AWS_PW=${GHVAR_AWS_PW}
       -e GHVAR_AWS_REGION=${GHVAR_AWS_REGION}
       -e CI_PROJECT_NAME=${CI_PROJECT_NAME}
-      -e CI_BUILD_REF_NAME=${CI_BUILD_REF_NAME}
+      -e CI_BUILD_REF_NAME=${CI_BUILD_REF_SLUG}
       -e CI_BUILD_ID=${CI_BUILD_ID}
       -e ARTIFACT_0=${ARTIFACT_0}
       -e ARTIFACT_1=${ARTIFACT_1}

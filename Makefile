@@ -1,6 +1,6 @@
 TOP=$(CURDIR)
 OUTPUT_DIR=/opt/output
-BR_DIR=/opt/buildroot
+BR_DIR?=/opt/buildroot
 
 # export BR2_DL_DIR?=$(HOME)/.br2_download_cache
 # export BR2_CCACHE_DIR?=$(HOME)/.br2_ccache
