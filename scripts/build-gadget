@@ -7,7 +7,7 @@ fi
 
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
-GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
+GADGET_CONTAINER=gadget-build-container #${GADGET_CONTAINER:-gadget-build-container}
 ENVIRONMENT_FILE=".local-env"
 
 INTERACTIVE=""
