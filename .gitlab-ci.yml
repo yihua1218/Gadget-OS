@@ -11,7 +11,7 @@ stages:
 variables:
   GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:master
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
-  UPLOAD_CONTAINER_BRANCH:${UPLOAD_CONTAINER_BRANCH}
+  UPLOAD_CONTAINER_BRANCH: ${UPLOAD_CONTAINER_BRANCH}
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${UPLOAD_CONTAINER_BRANCH}
   ARTIFACT_0: output/images/rootfs.ubi.sparse
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
