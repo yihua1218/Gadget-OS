@@ -1,11 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 if [ -z "$(pwd)/gadget" ]; then
 	echo "You seem to be running this from the wrong directory."
 	echo "Please run from the gadget-os git root."
 	exit 1
 fi
 
-GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
+# GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
+GADGET_CONTAINER=gadget-build-container
 
 docker inspect ${GADGET_CONTAINER}
 if [ ! "$?" == "0" ]; then
