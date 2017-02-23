@@ -59,6 +59,7 @@ build:
 #  script:
     - docker pull $UPLOAD_CONTAINER
     - docker run
+      -e GHVAR_SLACK_CHANNEL=${GHVAR_SLACK_CHANNEL}
       -e GHVAR_SLACK_WEBHOOK=${GHVAR_SLACK_WEBHOOK}
       -e GHVAR_AWS_ID=${GHVAR_AWS_ID}
       -e GHVAR_AWS_PW=${GHVAR_AWS_PW}
