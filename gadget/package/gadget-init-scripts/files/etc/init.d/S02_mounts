@@ -4,11 +4,11 @@ RETVAL=0
 start() {
 	/bin/mount -t proc proc /proc
 	/bin/mount -o remount,rw /
-	/bin/mount -t configfs none /sys/kernel/config
 	/bin/mkdir -p /dev/pts
 	/bin/mkdir -p /dev/shm
 	/bin/mount -a
 	/bin/hostname -F /etc/hostname
+	/bin/mount -t configfs none /sys/kernel/config
 	/bin/echo /sbin/mdev > /proc/sys/kernel/hotplug
 	/sbin/mdev -s
 }

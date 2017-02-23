@@ -1,0 +1,60 @@
+#!/bin/sh
+RETVAL=0
+
+GADGET_NAME="g_chippro"
+GADGET_CONFIG_DIR="/sys/kernel/config/usb_gadget/${GADGET_NAME}"
+GADGET_VENDOR_ID=0x1d6b
+GADGET_PRODUCT_ID=0x0104
+
+DEVICE_SERIAL=$(/bin/cat /proc/device-tree/serial-number)
+DEVICE_DEV_MAC=$(/bin/echo ${DEVICE_SERIAL} | /bin/sed 's/../&:/g;s/:$//' | /usr/bin/cut -d: -f -2,5-)
+DEVICE_HOST_MAC=$(/bin/echo ${DEVICE_SERIAL} | /bin/sed 's/../&:/g;s/:$//' | /usr/bin/cut -d: -f -4,6-)
+
+start() {
+	/bin/mkdir -p ${GADGET_CONFIG_DIR}
+	/bin/echo ${GADGET_VENDOR_ID} > ${GADGET_CONFIG_DIR}/idVendor
+	/bin/echo ${GADGET_PRODUCT_ID} > ${GADGET_CONFIG_DIR}/idProduct
+	/bin/echo 0x0100 > ${GADGET_CONFIG_DIR}/bcdDevice
+	/bin/echo 0x0200 > ${GADGET_CONFIG_DIR}/bcdUSB
+	/bin/mkdir -p ${GADGET_CONFIG_DIR}/strings/0x409
+	/bin/mkdir -p ${GADGET_CONFIG_DIR}/configs/c.1/strings/0x409
+	/bin/mkdir -p ${GADGET_CONFIG_DIR}/functions/ecm.usb0
+	/bin/mkdir -p ${GADGET_CONFIG_DIR}/functions/acm.usb0
+	/bin/echo "${DEVICE_SERIAL}" > ${GADGET_CONFIG_DIR}/strings/0x409/serialnumber
+	/bin/echo "Next Thing Co" > ${GADGET_CONFIG_DIR}/strings/0x409/manufacturer
+	/bin/echo "CHIP Pro" > ${GADGET_CONFIG_DIR}/strings/0x409/product
+	/bin/echo "Config 1: ECM network" > ${GADGET_CONFIG_DIR}/configs/c.1/strings/0x409/configuration
+	/bin/echo 500 > ${GADGET_CONFIG_DIR}/configs/c.1/MaxPower
+	/bin/echo "${DEVICE_HOST_MAC}" > ${GADGET_CONFIG_DIR}/functions/ecm.usb0/host_addr
+	/bin/echo "${DEVICE_DEV_MAC}" > ${GADGET_CONFIG_DIR}/functions/ecm.usb0/dev_addr
+	/bin/ln -s ${GADGET_CONFIG_DIR}/functions/ecm.usb0 ${GADGET_CONFIG_DIR}/configs/c.1/
+	/bin/ls /sys/class/udc > ${GADGET_CONFIG_DIR}/UDC
+	/usr/bin/connmanctl enable gadget
+	/usr/bin/connmanctl tether gadget on
+	# /bin/stty -F /dev/ttyGS0 115200
+	# /sbin/start-stop-daemon -S -q -m -b -p "/var/run/gadget-serial.pid" --exec "getty" -- -L ttyGS0 115200 linux
+}
+
+stop() {
+	echo "Nothing to do"
+}
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	status)
+		status $processname
+		RETVAL=$?
+		;;
+	restart)
+		stop
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|status|restart}"
+		;;
+esac
+exit $RETVAL

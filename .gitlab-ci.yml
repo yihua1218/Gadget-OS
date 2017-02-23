@@ -17,6 +17,8 @@ variables:
   ARTIFACT_2: output/images/uboot-40000.bin
   ARTIFACT_3: output/images/uboot.script
   ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-Toshiba_512_MLC.chp
+  SLACK_CHANNEL: $BUILD_SLACK_CHANNEL
+  SLACK_HOOK: $BUILD_SLACK_HOOK
 
 before_script:
   - echo "Building gadget os..."
@@ -57,6 +59,7 @@ build:
 #  script:
     - docker pull $UPLOAD_CONTAINER
     - docker run
+      -e GHVAR_SLACK_WEBHOOK=${GHVAR_SLACK_WEBHOOK}
       -e GHVAR_AWS_ID=${GHVAR_AWS_ID}
       -e GHVAR_AWS_PW=${GHVAR_AWS_PW}
       -e GHVAR_AWS_REGION=${GHVAR_AWS_REGION}
