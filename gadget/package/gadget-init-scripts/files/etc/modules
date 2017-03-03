@@ -2,10 +2,9 @@ sunxi
 libcomposite
 usb_f_ecm
 usb_f_eem
-# g_serial
-# g_cdc dev_addr=00:ca:fe:ba:be:01 host_addr=00:de:af:c0:de:01
 sun4i-codec
 cfg80211
 8723bs
 8723ds
 gluebi
+sun4i-lradc
