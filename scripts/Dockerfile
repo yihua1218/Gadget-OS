@@ -1,31 +1,30 @@
 FROM ubuntu:16.04
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update
-RUN apt -y upgrade
-RUN apt -y install wget
-RUN apt -y install build-essential
-RUN apt -y install bc
-RUN apt -y install git
-RUN apt -y install locales
-RUN apt -y install cpio
-RUN apt -y install lib32stdc++6 lib32z1 libc6-i386
-RUN apt -y install texinfo
-RUN apt -y install vim
-RUN apt -y install unzip
-RUN apt -y install ncurses-dev
-RUN apt -y install python
-RUN apt -y install android-tools-fsutils
-RUN apt -y install lzop
-RUN locale-gen en_US.UTF-8 && \
-	echo 'LANG="en_US.UTF-8"' > /etc/default/locale
 ENV LANG en_US.utf8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.utf8
-
-RUN git clone https://github.com/linux-sunxi/sunxi-tools /opt/sunxi-tools
-RUN make -C /opt/sunxi-tools sunxi-nand-image-builder
-RUN cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin
-RUN mkdir -p /opt/buildroot
-RUN wget -P /opt "https://github.com/buildroot/buildroot/archive/2016.11.tar.gz"
-RUN tar -C /opt/buildroot -xzf /opt/2016.11.tar.gz --strip-components=1
-# RUN git -C /opt clone https://github.com/buildroot/buildroot.git --branch=2016.11
+RUN apt update && \
+	apt -y upgrade && \
+	apt -y install wget \
+	build-essential \
+	bc \
+	git \
+	locales \
+	cpio \
+	lib32stdc++6 lib32z1 libc6-i386 \
+	texinfo \
+	vim \
+	unzip \
+	ncurses-dev \
+	python \
+	android-tools-fsutils \
+	lzop && \
+	rm -rf /var/lib/apt-lists/* && \
+	locale-gen en_US.UTF-8 && \
+	echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
+	git clone https://github.com/linux-sunxi/sunxi-tools /opt/sunxi-tools && \
+	make -C /opt/sunxi-tools sunxi-nand-image-builder && \
+	cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin && \
+	mkdir -p /opt/buildroot && \
+	wget -P /opt "https://github.com/buildroot/buildroot/archive/2016.11.tar.gz" && \
+	tar -C /opt/buildroot -xzf /opt/2016.11.tar.gz --strip-components=1
