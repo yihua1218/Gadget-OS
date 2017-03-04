@@ -30,7 +30,7 @@ start() {
 	/bin/ln -s ${GADGET_CONFIG_DIR}/functions/ecm.usb0 ${GADGET_CONFIG_DIR}/configs/c.1/
 	/bin/ls /sys/class/udc > ${GADGET_CONFIG_DIR}/UDC
 	/usr/bin/connmanctl enable gadget
-	/usr/bin/connmanctl tether gadget on
+	# /usr/bin/connmanctl tether gadget on
 	# /bin/stty -F /dev/ttyGS0 115200
 	# /sbin/start-stop-daemon -S -q -m -b -p "/var/run/gadget-serial.pid" --exec "getty" -- -L ttyGS0 115200 linux
 }
