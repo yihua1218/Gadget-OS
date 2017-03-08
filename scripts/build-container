@@ -6,22 +6,22 @@ if [ -z "$(pwd)/gadget" ]; then
 fi
 
 # GADGET_CONTAINER=${GADGET_CONTAINER:-gadget-build-container}
-GADGET_CONTAINER=gadget-build-container
+GADGET_CONTAINER=gadget/build-container
 
-docker inspect ${GADGET_CONTAINER}
-if [ ! "$?" == "0" ]; then
+docker inspect ${GADGET_CONTAINER} > /dev/null
+if [ ! "$?" = "0" ]; then
 	docker build -f scripts/Dockerfile -t ${GADGET_CONTAINER} $(pwd)
 fi
 
 docker volume inspect gadget-build-ccache > /dev/null
-if [ ! "$?" == "0" ]; then
+if [ ! "$?" = "0" ]; then
 	docker volume create --name gadget-build-ccache
 fi
 docker volume inspect gadget-build-output > /dev/null
-if [ ! "$?" == "0" ]; then
+if [ ! "$?" = "0" ]; then
 	docker volume create --name gadget-build-output
 fi
 docker volume inspect gadget-build-dlcache > /dev/null
-if [ ! "$?" == "0" ]; then
+if [ ! "$?" = "0" ]; then
 	docker volume create --name gadget-build-dlcache
 fi
