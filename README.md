@@ -1,5 +1,7 @@
 # gadgetos
 
+## Please note that this is a work in progress release of the source code.
+
 ## Install required build tools
 
 #### Install sunxi-fel and fastboot
