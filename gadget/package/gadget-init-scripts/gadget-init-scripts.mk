@@ -17,7 +17,6 @@ define GADGET_INIT_SCRIPTS_INSTALL_USB_GADGET
 	$(INSTALL) -d -m 755 $(TARGET_DIR)/etc/connman
 	$(INSTALL) -D -m 644 $(@D)/etc/connman/main.conf $(TARGET_DIR)/etc/connman/
 	$(INSTALL) -D -m 644 $(@D)/etc/dnsmasq.conf $(TARGET_DIR)/etc/
-	$(INSTALL) -D -m 644 $(@D)/etc/network/interfaces $(TARGET_DIR)/etc/network/
 endef
 GADGET_INIT_SCRIPTS_POST_INSTALL_TARGET_HOOKS += GADGET_INIT_SCRIPTS_INSTALL_USB_GADGET
 endif
