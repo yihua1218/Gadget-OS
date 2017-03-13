@@ -11,12 +11,13 @@ stages:
 variables:
   GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:master
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
+  NAND_TYPE: Toshiba_512_SLC
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${GHVAR_UPLOAD_CONTAINER_BRANCH}
   ARTIFACT_0: output/images/rootfs.ubi.sparse
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
   ARTIFACT_2: output/images/uboot-40000.bin
   ARTIFACT_3: output/images/uboot.script
-  ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-Toshiba_512_MLC.chp
+  ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-${NAND_TYPE}.chp
   GHVAR_SLACK_CHANNEL: ${GHVAR_SLACK_CHANNEL}
   GHVAR_SLACK_HOOK: ${GHVAR_SLACK_HOOK}
 
@@ -47,7 +48,7 @@ build:
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la output/images
     - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER /bin/bash -x scripts/flash-gadget
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand Toshiba_512M_MLC chp /opt/images/fel.chp chp /opt/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
+    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand ${NAND_TYPE} chp /opt/images/fel.chp chp /opt/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
 #    - rm output/images/fel.chp output/images/fastboot.chp
 #  cache:
 #    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
