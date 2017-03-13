@@ -2,6 +2,7 @@ sunxi
 libcomposite
 usb_f_ecm
 usb_f_eem
+usb_f_rndis
 sun4i-codec
 cfg80211
 8723bs
