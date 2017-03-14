@@ -11,7 +11,7 @@ stages:
 variables:
   GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:master
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
-  NAND_TYPE: Toshiba_512_SLC
+  NAND_TYPE: Toshiba_512M_SLC
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${GHVAR_UPLOAD_CONTAINER_BRANCH}
   ARTIFACT_0: output/images/rootfs.ubi.sparse
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
