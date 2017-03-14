@@ -1,5 +1,6 @@
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/demo-blinkenlights/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/demo-vu-meter/Config.in"
+source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadget-bluetooth-conf/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadget-init-scripts/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadget-tools/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/dtc-overlay/Config.in.host"

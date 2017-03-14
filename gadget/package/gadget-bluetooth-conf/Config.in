@@ -1,0 +1,4 @@
+config BR2_PACKAGE_GADGET_BLUETOOTH_CONF
+	bool "gadget-bluetooth-conf"
+	help
+	  This option tells DBUS to allow bluetooth connections
