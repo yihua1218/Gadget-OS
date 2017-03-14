@@ -30,7 +30,7 @@ build:
   stage: build
   script:
     - scripts/build-container
-    - scripts/build-gadget make -s chippro_docker_defconfig
+    - scripts/build-gadget make -s chippro_defconfig
     - scripts/build-gadget make -s all
     - ls -la
     - ls output/images
