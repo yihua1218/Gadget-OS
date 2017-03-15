@@ -11,7 +11,8 @@ Clients for bootloaders on gr8. These support USB flashing.
 #### linux (debian):
 ```
 # TODO: fastboot install instructions
-<install android-platform-tools>
+sudo apt-get update
+sudo apt-get install android-tools-fastboot
 
 # get sunxi-fel
 sudo apt-get update
