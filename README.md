@@ -59,12 +59,7 @@ On macOS, you'll need to launch the Docker application from your Applications fo
 
 ### Create gadgetos config file
 
-The heart of your gadgetos is the config file. You can create a starting point, depending on what you want your CHIP Pro to do. We have already created a few examples - here are the commands to generate the config for each:
-
-* Default - `scripts/build-gadget make chippro_docker_defconfig`
-* Blinkenlights - `scripts/build-gadget make chippro_blinkenlights_defconfig`
-* Mic Recorder - `scripts/build-gadget make chippro_micrecorder_defconfig`
-* Access Point - `scripts/build-gadget make chippro_wirelessap_defconfig`
+`scripts/build-gadget make chippro_defconfig`
 
 Creating this config file takes less than a minute.
 
@@ -84,7 +79,7 @@ scripts/build-gadget make linux-nconfig
 Now you are ready to build!
 
 ```
-scripts/build-gadget make
+scripts/build-gadget make -s
 ```
 
 This can take an hour or more.
