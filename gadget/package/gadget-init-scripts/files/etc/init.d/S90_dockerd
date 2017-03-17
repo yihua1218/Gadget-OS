@@ -2,7 +2,7 @@
 RETVAL=0
 
 start() {
-	/usr/bin/dockerd
+	/usr/bin/dockerd &
 }
 
 stop() {
