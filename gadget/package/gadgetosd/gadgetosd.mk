@@ -5,11 +5,11 @@
 ################################################################################
 
 GADGETOSD_VERSION = unstable
-GADGETOSD_SITE = https://ntc.githost.io/nextthingco/gadgetosd
+GADGETOSD_SITE = ssh://git@ntc.githost.io/nextthingco/gadgetosd
 GADGETOSD_SITE_METHOD = git
-GADGETOSD_DEPENDENCIES = util-linux mongoose-6.7 
+GADGETOSD_DEPENDENCIES = util-linux
 
-HOST_GADGETOSD_DEPENDENCIES = util-linux mongoose-6.7
+HOST_GADGETOSD_DEPENDENCIES = util-linux
 
 define GADGETOSD_BUILD_CMDS
 	$(MAKE) clean
