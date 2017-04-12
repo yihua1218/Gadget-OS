@@ -7,7 +7,11 @@ fi
 
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
-GADGET_CONTAINER=gadget-build-container #${GADGET_CONTAINER:-gadget-build-container}
+
+if [ -z "${GADGET_CONTAINER}" ]; then
+	GADGET_CONTAINER=gadget-build-container
+fi
+
 ENVIRONMENT_FILE=".local-env"
 
 INTERACTIVE=""
@@ -27,21 +31,38 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
 fi
 
+if [ -n "${SSH_KEY_DIR}" ]; then
+	eval $(ssh-agent -a $(pwd)/.agent_bind_sock)
+	ssh-add ${SSH_KEY_DIR}/id_*
+	SSH_FORWARDING="-v $(pwd)/.agent_bind_sock:/opt/.agent_bind_sock -v $(pwd)/${SSH_KEY_DIR}/:/root/.ssh/ --env SSH_AUTH_SOCK=/opt/.agent_bind_sock"
+	echo "Using SSH keys: ${SSH_AUTH_SOCK}"
+fi
 
-docker run \
-	--rm \
-	--env BR2_DL_DIR=/opt/dlcache/ \
-	--volume=gadget-build-dlcache:/opt/dlcache/ \
-	--volume=gadget-build-output:/opt/output \
-	--volume=${IMAGE_DIR}:/opt/output/images \
-	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
-	--name=gadget-build-task \
-	-w="/opt/gadget-os-proto" \
-	${LOCAL_ENV} \
-	${INTERACTIVE} \
-	${GADGET_CONTAINER} \
-	${task}
+if [ -n "${no_docker}" ]; then
+	IMAGE_DIR=/opt/output/images
+	BR2_DL_DIR=/opt/dlcache OUTPUT_DIR=/opt/output ${task}
+	echo "NO DOCKER"
+else
+	echo "Docker enabled :/"
+	docker run \
+		--rm \
+		--env BR2_DL_DIR=/opt/dlcache/ \
+		--volume=gadget-build-dlcache:/opt/dlcache/ \
+		--volume=gadget-build-output:/opt/output \
+		--volume=${IMAGE_DIR}:/opt/output/images \
+		--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+		--name=gadget-build-task \
+		-w="/opt/gadget-os-proto" \
+		${SSH_FORWARDING} \
+		${LOCAL_ENV} \
+		${INTERACTIVE} \
+		${GADGET_CONTAINER} \
+		${task}
+fi
 
+if [ -n "${SSH_KEY_DIR}" ]; then
+	kill -TERM ${SSH_AGENT_PID}
+fi
 
 #	--env BR2_CCACHE_DIR=/opt/ccache/ \
 #	--volume=gadget-build-ccache:/opt/ccache/ \
