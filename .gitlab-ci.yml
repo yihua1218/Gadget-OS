@@ -1,7 +1,4 @@
-image: docker:latest
-
-services:
-  - docker:dind
+image: ntc-registry.githost.io/nextthingco/buildroot-development-container
 
 stages:
   - build
@@ -17,67 +14,66 @@ variables:
   ARTIFACT_1: output/images/spl-40000-1000-100.bin
   ARTIFACT_2: output/images/uboot-40000.bin
   ARTIFACT_3: output/images/uboot.script
-  ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_BUILD_ID}-${NAND_TYPE}.chp
+  ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_PIPELINE_ID}-${NAND_TYPE}.chp
   GHVAR_SLACK_CHANNEL: ${GHVAR_SLACK_CHANNEL}
   GHVAR_SLACK_HOOK: ${GHVAR_SLACK_HOOK}
-
-before_script:
-  - echo "Building gadget os..."
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-  - docker pull $GADGET_CONTAINER
+  SSH_KEY_DIR: /root/.ssh/
+  no_docker: "something"
 
 build:
   stage: build
   script:
-    - scripts/build-container
+    - mkdir ${SSH_KEY_DIR}/
+    - ssh-keyscan ntc.githost.io > ${SSH_KEY_DIR}/known_hosts
+    - echo "${SSH_KEY_SECRET}" > ${SSH_KEY_DIR}/id_rsa
+    - echo "${SSH_CONFIG}" > ${SSH_KEY_DIR}/ssh_config
+    - chmod 0600 ${SSH_KEY_DIR}/*
     - scripts/build-gadget make -s chippro_defconfig
-    - scripts/build-gadget make -s all
-    - ls -la
-    - ls output/images
-#  cache:
-#    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
-#    paths:
-#      - output/
+    - scripts/build-gadget make -s
+    - ls /opt/output/images
+    - mkdir -p output
+    - mv /opt/output/images output/images
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - output/images/*
 
-#howitzer:
-#  stage: howitzer
-#  script:
-#    - ls -la
+howitzer:
+  image: ntc-registry.githost.io/gadget/howitzer-container:master
+  stage: howitzer
+  dependencies:
+    - build
+  script:
     - ls output/images
-    - docker pull $HOWITZER_CONTAINER
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER ls -la output/images
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER /bin/bash -x scripts/flash-gadget
-    - docker run -v $PWD:/opt/images -w /opt/images --rm $HOWITZER_CONTAINER howitzer nand ${NAND_TYPE} chp /opt/images/fel.chp chp /opt/images/fastboot.chp -f /opt/images/${ARTIFACT_4}
-#    - rm output/images/fel.chp output/images/fastboot.chp
-#  cache:
-#    key: ${CI_BUILD_REF_NAME}${CI_BUILD_ID}
-#    paths:
-#      - output/
+    - /bin/bash -x scripts/flash-gadget
+    - howitzer nand ${NAND_TYPE} chp fel.chp chp fastboot.chp -f ${ARTIFACT_4}
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - output/images/*
 
-#upload:
-#  stage: upload
-#  script:
-    - docker pull $UPLOAD_CONTAINER
-    - docker run
-      -e GHVAR_SLACK_CHANNEL=${GHVAR_SLACK_CHANNEL}
-      -e GHVAR_SLACK_WEBHOOK=${GHVAR_SLACK_WEBHOOK}
-      -e GHVAR_AWS_ID=${GHVAR_AWS_ID}
-      -e GHVAR_AWS_PW=${GHVAR_AWS_PW}
-      -e GHVAR_AWS_REGION=${GHVAR_AWS_REGION}
-      -e CI_PROJECT_NAME=${CI_PROJECT_NAME}
-      -e CI_BUILD_REF_NAME=${CI_BUILD_REF_SLUG}
-      -e CI_BUILD_ID=${CI_BUILD_ID}
-      -e ARTIFACT_0=${ARTIFACT_0}
-      -e ARTIFACT_1=${ARTIFACT_1}
-      -e ARTIFACT_2=${ARTIFACT_2}
-      -e ARTIFACT_3=${ARTIFACT_3}
-      -e ARTIFACT_4=${ARTIFACT_4}
-      --rm -v $PWD:/upload -w /upload
-      $UPLOAD_CONTAINER ci-s3-upload
+upload:
+  image: ntc-registry.githost.io/nextthingco/ci-tools:unstable
+  stage: upload
+  dependencies:
+    - build
+    - howitzer
+  script:
+    - ls -al
+    - mkdir -p /upload
+    - mv output /upload/output
+    - cd /upload
+    - ls -al /upload/output/images
+    - ci-s3-upload
       ${ARTIFACT_0}
       ${ARTIFACT_1}
       ${ARTIFACT_2}
       ${ARTIFACT_3}
       ${ARTIFACT_4}
-
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - /upload/*
