@@ -39,18 +39,4 @@ else
 	echo "No nand type selected. Not generating sparse image"
 fi
 
-cat <<-EOF > ${1}/uboot.script.source
-	mw \${scriptaddr} 0x0
-	sleep 4
-	fastboot 0
-	setenv boot_kernel 'bootz \${kernel_addr_r} - \${fdt_addr_r}'
-	setenv boot_ubi 'run read_kernel; run read_fdt; run boot_kernel'
-	setenv bootargs 'root=ubi0:rootfs rootfstype=ubifs rw ubi.mtd=4 lpj=5009408 ubi.fm_autoconvert=1 quiet'
-	setenv bootcmd 'run boot_ubi'
-	setenv read_fdt 'ubi read \${fdt_addr_r} fdt'
-	setenv read_kernel 'ubi read \${kernel_addr_r} kernel'
-	ubi part UBI
-	boot
-EOF
-
-mkimage -A arm -T script -C none -n "Flash CHIP Pro" -d "${1}/uboot.script.source" "${1}/uboot.script"
+mkimage -A arm -T script -C none -n "Flash" -d "${BOARD_DIR}/uboot.script.source" "${1}/uboot.script"
