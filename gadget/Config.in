@@ -14,3 +14,4 @@ source "$BR2_EXTERNAL_GADGETOS_PATH/package/network-interfaces-script/Config.in.
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/chip-mtd-utils/Config.in"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/chip-mtd-utils/Config.in.host"
 source "$BR2_EXTERNAL_GADGETOS_PATH/package/gadgetosd/Config.in"
+source "$BR2_EXTERNAL_GADGETOS_PATH/package/mender/Config.in"
