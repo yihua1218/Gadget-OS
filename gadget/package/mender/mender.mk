@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-MENDER_VERSION = 1.0.1
-MENDER_SITE = $(call github,mendersoftware,mender,$(MENDER_VERSION))
+MENDER_VERSION = 7449c12bc60b8484a27e8f56cd957c6759b12c3d
+MENDER_SITE = $(call github,mirzak,mender,$(MENDER_VERSION))
 MENDER_LICENSE = Apache-2.0
 MENDER_LICENSE_FILES = LICENSE
 
