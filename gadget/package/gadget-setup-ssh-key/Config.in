@@ -1,0 +1,4 @@
+config BR2_PACKAGE_GADGET_SETUP_SSH_KEY
+	bool "gadget-setup-ssh-key"
+	help
+	  The default ssh key used during setup, to be replaced after first use
