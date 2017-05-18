@@ -4,6 +4,8 @@
 SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"
 . "$SCRIPTDIR/gadget_update_lib"
 
+mutex /var/run/update_requester
+
 echo -e "\nUPDATE_REQUESTER\n"
 
 [[ ! -x $(which curl) ]] && fatal "ERROR: cannot find curl"

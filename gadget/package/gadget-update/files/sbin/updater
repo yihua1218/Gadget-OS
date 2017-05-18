@@ -4,8 +4,11 @@
 SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"
 . "$SCRIPTDIR/gadget_update_lib"
 
+mutex /var/run/updater
+
 echo -e "\nUPDATER\n"
 
+[[ ! -x $(which head) ]] && fatal "ERROR: cannot find head"
 [[ ! -x $(which curl) ]] && fatal "ERROR: cannot find curl"
 [[ ! -x $(which ubiupdatevol) ]] && fatal "ERROR: cannot find ubiupdatevol"
 [[ ! -x $(which get_active_slot) ]] && fatal "ERROR: cannot find get_active_slot"

@@ -1,5 +1,24 @@
 #!/bin/sh
 
+function next_fd()
+{
+    local FD=0
+    while [ -e /proc/$$/fd/$FD ]; do
+        FD=$((FD+1))
+    done
+    echo $FD
+}
+
+function mutex()
+{
+    local LOCKFILE=${1:?"ERROR: specify lock file name"}
+    local FD=$(next_fd)
+
+    eval "exec $FD>$LOCKFILE"
+    ! flock -n $FD && fatal "ERROR: already running (lock file '$1')"
+    echo $$ 1>&$FD
+}
+
 function fatal()
 {
     MSG=${1:-ERROR}
