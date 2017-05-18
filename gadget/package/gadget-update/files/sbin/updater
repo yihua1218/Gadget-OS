@@ -44,7 +44,6 @@ echo "OK"
 
 # APPLY UPDATE
 for a in $artifacts; do
-    echo -n "Flashing $a..."
     eval "dest=\$${a}_dest"
     eval "file=\$${a}_file"
     eval "size=\$${a}_size"
@@ -52,12 +51,23 @@ for a in $artifacts; do
 
     [[ -z "$size" ]] && fatal "ERROR: invalid file size specified in manifest"
     [[ "$size" -le "0" ]] && fatal "ERROR: invalid file size specified in manifest"
-    
     [[ -z "$dest" ]] && fatal "ERROR: destination empty"
+    [[ -z "$checksum" ]] && fatal "ERROR: checksum empty"
+    [[ -z "$file" ]] && fatal "ERROR: invalid URL"
 
-    echo -e "\ncurl ${file} | ubiupdatevol ${dest} - -s ${size} \n"
-    ! curl ${file} | ubiupdatevol ${dest} - -s ${size} && fatal
+    ubivol=${dest##*/}
 
+    echo -n "Flashing $a..."
+    ! curl -s ${file} | ubiupdatevol ${dest} - -s ${size} && fatal
+    ubiupdateflag=$(cat /sys/class/ubi/$ubivol/upd_marker)
+    [[ -z "$ubiupdateflag" ]] && fatal "ERROR: cannot read $ubiupdateflag"
+    [[ "$ubiupdateflag" != "0" ]] && fatal "ERROR: ubi update not complete"
+    echo OK
+
+    echo -n "Verifiying..."
+    checksum2=$(cat $dest |head -c${size} |sha256sum)
+    checksum2=${checksum2%% *}
+    [[ "$checksum" != "$checksum2" ]] && fatal "ERROR: $checksum != $checksum2"
     echo OK
 done
 
