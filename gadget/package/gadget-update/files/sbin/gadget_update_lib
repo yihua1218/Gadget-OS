@@ -1,0 +1,47 @@
+#!/bin/sh
+
+function fatal()
+{
+    MSG=${1:-ERROR}
+    RETURN=${2:-1}
+    
+    echo "$MSG"
+    exit $RETURN
+}
+
+function read_cfg()
+{
+    name=$1
+    input_file=$2
+
+    [[ -z "$1" ]] && echo -e "ERROR: read_cfg(): name empty" && return 1
+    [[ -z "$2" ]] && echo -e "ERROR: read_cfg(): input file empty" && return 1
+
+    sections=""
+    while read -r l; do
+    
+        l="${l//[/\[}"          # escape [
+        l="${l//]/\]}"          # escape ]
+        #TODO: make secure & escape way more here!!
+    
+        [[ "${l##\\[}" != "$l" ]] &&  [[ "${l%%\\]*}" != "$l" ]] \
+            && section="${l##\\[}" && section="${section%%\\]*}" \
+            && sections="$sections $section" \
+            && continue
+    
+        l="${l//;*/}"                      # remove comments with ;
+        l="${l//\    =/=}"                 # remove tabs before =
+        l="${l//=\   /=}"                  # remove tabs be =
+        l="${l//\ =\ /=}"                  # remove anything with a space around =
+        key="${l%%=*}"
+        value="${l##*=}"
+    
+        [[ -z "$key" ]] && continue
+        [[ -z "$value" ]] && continue
+    
+        #echo "${name}_${section}_${key}=$value"
+        export "${name}_${section}_${key}"="$value"
+    done < "${input_file}"
+
+    return 0
+}

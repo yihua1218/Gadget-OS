@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# include script lib
+SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"
+. "$SCRIPTDIR/gadget_update_lib"
+
+echo -e "\nUPDATER\n"
+
+[[ ! -x $(which curl) ]] && fatal "ERROR: cannot find curl"
+[[ ! -x $(which ubiupdatevol) ]] && fatal "ERROR: cannot find ubiupdatevol"
+[[ ! -x $(which get_active_slot) ]] && fatal "ERROR: cannot find get_active_slot"
+[[ ! -x $(which get_inactive_slot) ]] && fatal "ERROR: cannot find get_inactive_slot"
+
+MANIFEST="$1"
+MANIFEST_DIR="$(dirname "${MANIFEST}")"
+USAGE="USAGE: $0 [manifest file]\n"
+
+SYSTEM_CFG="/etc/gadget-update/system.cfg"
+[[ -z "${SYSTEM_CFG}" ]] && echo "SYSTEM_CFG is not set" && exit 1
+echo -n "Reading system configuration..."
+[[ ! -f "${SYSTEM_CFG}" ]] && echo "ERROR: cannot read \"${SYSTEM_CFG}\"" && exit 1
+! read_cfg sys "${SYSTEM_CFG}" && fatal
+echo "OK"
+
+ACTIVE=$(get_active_slot)
+INACTIVE=$(get_inactive_slot)
+
+echo
+echo "active slot: ${ACTIVE}"
+echo "inactive slot: ${INACTIVE}"
+
+for x in kernel rootfs fdt; do
+    eval "${x}_dest=\$sys_slot_${INACTIVE}_${x}"
+done
+
+echo
+[[ -z "${MANIFEST}" ]] && echo -e "$USAGE" && exit 1
+[[ ! -f "${MANIFEST}" ]] && echo "ERROR: cannot read \"$1\"" && exit 1
+
+echo -n "Reading ${MANIFEST}..."
+artifacts="$(jq -r '.Artifacts[] | "\(.Name)"' <"${MANIFEST}")"
+eval $(jq -r '.Artifacts[] | "\(.Name)_file=\(.File); \(.Name)_size=\(.Size); \(.Name)_checksum=\(.Checksum)"' <"${MANIFEST}")
+echo "OK"
+
+# APPLY UPDATE
+for a in $artifacts; do
+    echo -n "Flashing $a..."
+    eval "dest=\$${a}_dest"
+    eval "file=\$${a}_file"
+    eval "size=\$${a}_size"
+    eval "checksum=\$${a}_checksum"
+
+    [[ -z "$size" ]] && fatal "ERROR: invalid file size specified in manifest"
+    [[ "$size" -le "0" ]] && fatal "ERROR: invalid file size specified in manifest"
+    
+    [[ -z "$dest" ]] && fatal "ERROR: destination empty"
+
+    echo -e "\ncurl ${file} | ubiupdatevol ${dest} - -s ${size} \n"
+    ! curl ${file} | ubiupdatevol ${dest} - -s ${size} && fatal
+
+    echo OK
+done
+
+echo
+echo -n "Set active slot: $INACTIVE..."
+! set_active_slot_uboot $INACTIVE && fatal
+echo "OK"
+
+echo
+echo "Reboot to apply update!"

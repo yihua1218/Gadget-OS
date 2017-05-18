@@ -1,0 +1,12 @@
+#!/bin/sh
+
+CPU_SERIAL="$(cat /proc/cpuinfo)"
+CPU_SERIAL="$( echo "${CPU_SERIAL##*Serial*: }")"
+
+WLAN0_MAC="$(ip addr show wlan0)"
+WLAN0_MAC="$( echo "${WLAN0_MAC##*link/ether }")"
+WLAN0_MAC="${WLAN0_MAC%% brd*}"
+
+echo "[id]"
+echo "cpu_serial=$CPU_SERIAL"
+echo "wlan0_mac=$WLAN0_MAC"

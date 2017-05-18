@@ -1,0 +1,8 @@
+config BR2_PACKAGE_GADGET_UPDATE
+	bool "gadget-update"
+	select BR2_PACKAGE_JQ
+	select BR2_PACKAGE_LIBCURL
+	select BR2_PACKAGE_CURL
+	select BR2_PACKAGE_MTD
+    select BR2_PACKAGE_MTD_UBIUPDATEVOL
+
