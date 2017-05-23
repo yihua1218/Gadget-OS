@@ -13,6 +13,8 @@ GADGET_UPDATE_LICENSE = MIT
 
 define GADGET_UPDATE_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 644 $(@D)/etc/gadget-update/system.cfg $(TARGET_DIR)/etc/gadget-update/system.cfg
+	$(INSTALL) -D -m 644 $(@D)/etc/gadget-update/test.cert.pem $(TARGET_DIR)/etc/gadget-update/test.cert.pem
+	$(INSTALL) -D -m 644 $(@D)/etc/gadget-update/ca-chain.cert.pem $(TARGET_DIR)/etc/gadget-update/ca-chain.cert.pem
 	$(INSTALL) -D -m 755 $(@D)/sbin/update_requester $(TARGET_DIR)/sbin/update_requester
 	$(INSTALL) -D -m 755 $(@D)/sbin/updater $(TARGET_DIR)/sbin/updater
 	$(INSTALL) -D -m 755 $(@D)/sbin/get_active_slot $(TARGET_DIR)/sbin/get_active_slot

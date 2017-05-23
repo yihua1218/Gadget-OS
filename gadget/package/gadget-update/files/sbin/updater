@@ -25,6 +25,8 @@ echo -n "Reading system configuration..."
 ! read_cfg sys "${SYSTEM_CFG}" && fatal
 echo "OK"
 
+[[ -z "${cfg_system_ca_chain}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
+
 ACTIVE=$(get_active_slot)
 INACTIVE=$(get_inactive_slot)
 
@@ -47,6 +49,7 @@ echo "OK"
 
 # APPLY UPDATE
 for a in $artifacts; do
+    # TODO: make evil eval less evil
     eval "dest=\$${a}_dest"
     eval "file=\$${a}_file"
     eval "size=\$${a}_size"
@@ -61,7 +64,7 @@ for a in $artifacts; do
     ubivol=${dest##*/}
 
     echo -n "Flashing $a..."
-    ! curl -s ${file} | ubiupdatevol ${dest} - -s ${size} && fatal
+    ! curl --cacert "${cfg_system_ca_chain}" -s "${file}" | ubiupdatevol ${dest} - -s ${size} && fatal
     ubiupdateflag=$(cat /sys/class/ubi/$ubivol/upd_marker)
     [[ -z "$ubiupdateflag" ]] && fatal "ERROR: cannot read $ubiupdateflag"
     [[ "$ubiupdateflag" != "0" ]] && fatal "ERROR: ubi update not complete"

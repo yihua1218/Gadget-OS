@@ -19,13 +19,28 @@ function mutex()
     echo $$ 1>&$FD
 }
 
+function init_tmpdir()
+{
+    export _TMPDIR="$(mktemp -d /tmp/gadget-update-XXXXXX)"
+    [[ ! -d "${_TMPDIR}" ]] && fatal "ERROR: cannot create temporary directory"
+}
+
 function fatal()
 {
     MSG=${1:-ERROR}
     RETURN=${2:-1}
+
+#    [[ -d "${_TMPDIR}" ]] && rm -rf "${_TMPDIR}"
     
     echo "$MSG"
     exit $RETURN
+}
+
+function hex2bin()
+{
+    while read -n2 c; do
+        echo -ne "\x$c"
+    done
 }
 
 function read_cfg()
