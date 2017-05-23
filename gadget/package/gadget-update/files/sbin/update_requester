@@ -17,13 +17,14 @@ echo -e "\nUPDATE_REQUESTER\n"
 
 SYSTEM_CFG="/etc/gadget-update/system.cfg"
 [[ -z "${SYSTEM_CFG}" ]] && fatal "SYSTEM_CFG is not set"
-echo "reading system configuration..."
+echo -n "Reading system configuration..."
 [[ ! -f "${SYSTEM_CFG}" ]] && fatal "ERROR: cannot read \"$SYSTEM_CFG\""
 ! read_cfg cfg "${SYSTEM_CFG}" && fatal "ERROR: failed to read \"$SYSTEM_CFG\""
+echo "OK"
 
 [[ -z "${cfg_system_ca_chain}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
-[[ -z "${cfg_system_server_url}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
-[[ -z "${cfg_system_workdir}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
+[[ -z "${cfg_system_server_url}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing server_url setting"
+[[ -z "${cfg_system_workdir}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing workdir setting"
 
 URL="${cfg_system_server_url}"
 ADDR=${URL##*//}; ADDR=${ADDR%%/*};
@@ -36,11 +37,22 @@ ARTIFACTS="$_TMPDIR/artifacts"
 
 [[ ! -d $WORKDIR ]] && ! mkdir -p "$WORKDIR" && fatal "ERROR: cannot create directory '$WORKDIR'"
 
-## GET & VERIFY UPDATE SERVER CERT
-echo -n "Verifying update server $ADDR..."
-! openssl s_client -CAfile ${cfg_system_ca_chain} -connect "${ADDR}" 2>&1 </dev/null | sed -ne '/BEGIN CERT/,/END CERT/p' >"${CERT}" && fatal "ERROR: cannot get & verify server cert"
+## GET UPDATE SERVER CERT
+echo -n "Retrieving update server certificate from $ADDR..."
+! openssl s_client -CAfile ${cfg_system_ca_chain} -connect "${ADDR}" 2>&1 </dev/null | sed -ne '/BEGIN CERT/,/END CERT/p' >"${CERT}" && fatal "ERROR: cannot get server cert"
+[[ -z "$(cat "${CERT}")" ]] && fatal "ERROR: cannot get server cert"
 echo "OK"
-! openssl x509 -in "${CERT}" -pubkey -noout > "${PUBKEY}" && fatal "ERROR: cannot extract server public key"
+
+## VERIFY SERVER CERT
+echo -n "Verifiying..."
+! openssl verify -CAfile "${cfg_system_ca_chain}" "${CERT}" 2>&1 >/dev/null && fatal
+echo "OK"
+
+## EXTRACT PUBLIC KEY
+echo -n "Extracting public key..."
+! openssl x509 -in "${CERT}" -pubkey -noout 2>/dev/null > "${PUBKEY}" && fatal "ERROR: cannot extract server public key"
+[[ -z "$(cat "${PUBKEY}")" ]] && fatal "ERROR: cannot get extract public key"
+echo "OK"
 
 ## REQUEST UPDATE
 echo -n "Requesting update from $URL..."

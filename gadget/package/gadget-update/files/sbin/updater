@@ -16,12 +16,16 @@ echo -e "\nUPDATER\n"
 
 MANIFEST="$1"
 MANIFEST_DIR="$(dirname "${MANIFEST}")"
-USAGE="USAGE: $0 [manifest file]\n"
+USAGE="USAGE: $0 [manifest file]"
+
+echo
+[[ -z "${MANIFEST}" ]] && fatal "$USAGE"
+[[ ! -f "${MANIFEST}" ]] && fatal "ERROR: cannot read \"$1\""
 
 SYSTEM_CFG="/etc/gadget-update/system.cfg"
-[[ -z "${SYSTEM_CFG}" ]] && echo "SYSTEM_CFG is not set" && exit 1
+[[ -z "${SYSTEM_CFG}" ]] && fatal "ERROR: SYSTEM_CFG is not set"
 echo -n "Reading system configuration..."
-[[ ! -f "${SYSTEM_CFG}" ]] && echo "ERROR: cannot read \"${SYSTEM_CFG}\"" && exit 1
+[[ ! -f "${SYSTEM_CFG}" ]] && fatal "ERROR: cannot read \"${SYSTEM_CFG}\""
 ! read_cfg sys "${SYSTEM_CFG}" && fatal
 echo "OK"
 
@@ -30,23 +34,26 @@ echo "OK"
 ACTIVE=$(get_active_slot)
 INACTIVE=$(get_inactive_slot)
 
+[[ -z "$ACTIVE" ]]   && fatal "ERROR: cannot get active slot"
+[[ -z "$INACTIVE" ]] && fatal "ERROR: cannot get inactive slot"
+
 echo
 echo "active slot: ${ACTIVE}"
 echo "inactive slot: ${INACTIVE}"
 
 for x in kernel rootfs fdt; do
     eval "${x}_dest=\$sys_slot_${INACTIVE}_${x}"
-done
 
-echo
-[[ -z "${MANIFEST}" ]] && echo -e "$USAGE" && exit 1
-[[ ! -f "${MANIFEST}" ]] && echo "ERROR: cannot read \"$1\"" && exit 1
+    [[ -z "${x}_dest" ]] && fatal "ERROR: no destination for '${x}'"
+done
 
 echo -n "Reading ${MANIFEST}..."
 artifacts="$(jq -r '.Artifacts[] | "\(.Name)"' <"${MANIFEST}")"
+[[ -z "$artifacts" ]] && fatal "ERROR: cannot read artifacts"
 eval $(jq -r '.Artifacts[] | "\(.Name)_file=\(.File); \(.Name)_size=\(.Size); \(.Name)_checksum=\(.Checksum)"' <"${MANIFEST}")
 echo "OK"
 
+updates_applied=0
 # APPLY UPDATE
 for a in $artifacts; do
     # TODO: make evil eval less evil
@@ -73,9 +80,13 @@ for a in $artifacts; do
     echo -n "Verifiying..."
     checksum2=$(cat $dest |head -c${size} |sha256sum)
     checksum2=${checksum2%% *}
+    [[ -z "$checksum2" ]] && fatal "ERROR: cannot calculate checksum"
     [[ "$checksum" != "$checksum2" ]] && fatal "ERROR: $checksum != $checksum2"
     echo OK
+
+    updates_applied=$((updates_applied+1))
 done
+[[ "$size" -le "0" ]] && fatal "ERROR: no updates applied"
 
 echo
 echo -n "Set active slot: $INACTIVE..."
