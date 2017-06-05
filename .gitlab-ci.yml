@@ -34,7 +34,7 @@ build:
     - mkdir -p output
     - mv /opt/output/images output/images
   artifacts:
-    expire_in: 1 week
+    expire_in: 2 days
     when: always
     paths:
       - output/images/*
@@ -49,7 +49,7 @@ howitzer:
     - /bin/bash -x scripts/flash-gadget
     - howitzer nand ${NAND_TYPE} chp fel.chp chp fastboot.chp -f ${ARTIFACT_4}
   artifacts:
-    expire_in: 1 week
+    expire_in: 2 days
     when: always
     paths:
       - output/images/*
@@ -73,7 +73,7 @@ upload:
       ${ARTIFACT_3}
       ${ARTIFACT_4}
   artifacts:
-    expire_in: 1 week
+    expire_in: 2 days
     when: always
     paths:
       - /upload/*
