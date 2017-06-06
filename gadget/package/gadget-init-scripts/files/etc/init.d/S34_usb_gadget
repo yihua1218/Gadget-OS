@@ -31,6 +31,16 @@ host_mac1=$(/bin/echo ${serial} | /bin/sed 's/../&:/g;s/:$//' | /usr/bin/cut -d:
 dev_mac2=$(/bin/echo ${serial} | /bin/sed 's/../&:/g;s/:$//' | /usr/bin/cut -d: -f -4,7-)
 host_mac2=$(/bin/echo ${serial} | /bin/sed 's/../&:/g;s/:$//' | /usr/bin/cut -d: -f -5,8-)
 
+# check bootargs for new IP setting
+bootarg_ip=$(cat /proc/cmdline | grep -o 'ip=[^ ]*')
+if [ ! -z $bootarg_ip ] &&\
+ [ $(cat /etc/dnsmasq.conf | grep 192.168.81.1) ] &&\
+ [ $(cat /etc/network/interfaces | grep 192.168.81.1) ]; then
+	export $bootarg_ip
+	sed -i "s%192.168.81.1%$bootarg_ip%g" /etc/dnsmasq.conf
+	sed -i "s%192.168.81.1%$bootarg_ip%g" /etc/network/interfaces
+fi
+
 if [ $(cat /etc/dnsmasq.conf | grep HOST1) ]; then	# First boot setup
 	sed -i "s%HOST1%$host_mac1%g" /etc/dnsmasq.conf
 	sed -i "s%HOST2%$host_mac2%g" /etc/dnsmasq.conf
