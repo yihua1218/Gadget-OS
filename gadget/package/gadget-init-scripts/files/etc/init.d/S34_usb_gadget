@@ -37,7 +37,6 @@ if [ ! -z $bootarg_ip ] &&\
  [ ! -z "$(cat /etc/dnsmasq.conf | grep 192.168.81.1)" ] &&\
  [ ! -z "$(cat /etc/network/interfaces | grep 192.168.81.1)" ]; then
 	bootarg_ip="$(echo $bootarg_ip | cut -c 4-)"
-	sed -i "s%192.168.81.1%$bootarg_ip%g" /etc/dnsmasq.conf
 	sed -i "s%192.168.81.1%$bootarg_ip%g" /etc/network/interfaces
 fi
 
