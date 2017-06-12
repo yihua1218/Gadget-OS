@@ -49,5 +49,5 @@ if [ -n "${IMAGE_TYPE}" ]; then
 
 fi
 fastboot -i 0x1f3a erase UBI
-fastboot -i 0x1f3a flash UBI ${BR_OUTPUT_DIR}/images/rootfs.ubi.sparse
+fastboot -i 0x1f3a flash UBI ${BR_OUTPUT_DIR}/images/chip-$ebsize-$psize.ubi.sparse
 fastboot -i 0x1f3a continue -u
