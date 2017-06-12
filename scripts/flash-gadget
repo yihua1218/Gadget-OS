@@ -1,2 +1,2 @@
 #!/bin/bash
-gadget/board/nextthing/chippro/scripts/flash.sh output --bootloader
+gadget/board/nextthing/chippro/scripts/flash.sh output --bootloader $@
