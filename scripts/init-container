@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -8,8 +8,9 @@ if [ -z "$(pwd)/gadget" ]; then
 	exit 1
 fi
 
-ID="$(cat "${SCRIPT_DIR}/id")"
-[[ -z "$ID" ]] && export ID=$RANDOM && echo $ID >"${SCRIPT_DIR}/id"
+ID_FILE="${SCRIPT_DIR}/id"
+[[ ! -f "${ID_FILE}" ]] && echo $RANDOM >"${ID_FILE}"
+ID="$(cat "${ID_FILE}")"
 
 # The container is needed only once
 GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
@@ -18,7 +19,7 @@ GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
 BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
 DL_CACHE_VOL="gadget-build-dlcache-${ID}"
 
-docker inspect ${GADGET_CONTAINER} 2>&1 >/dev/null || docker build -f scripts/Dockerfile -t ${GADGET_CONTAINER} $(pwd)
+docker inspect ${GADGET_CONTAINER} 2>/dev/null >/dev/null || docker build -f scripts/Dockerfile -t ${GADGET_CONTAINER} $(pwd)
 
 docker volume inspect "${BUILD_OUTPUT_VOL}" 2>/dev/null >/dev/null || docker volume create --name "${BUILD_OUTPUT_VOL}"
 docker volume inspect "${DL_CACHE_VOL}"  2>/dev/null >/dev/null || docker volume create --name "${DL_CACHE_VOL}"
