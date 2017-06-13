@@ -1,4 +1,9 @@
 #!/bin/sh
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ID="$(cat "${SCRIPT_DIR}/id")"
+[[ -z "$ID" ]] && "${SCRIPT_DIR}"/init-container
+
 if [ -n "${1}" ]; then
 	task="${@}"
 else
@@ -8,9 +13,10 @@ fi
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
 
-if [ -z "${GADGET_CONTAINER}" ]; then
-	GADGET_CONTAINER=gadget-build-container
-fi
+GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
+BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
+DL_CACHE_VOL="gadget-build-dlcache-${ID}"
+
 
 ENVIRONMENT_FILE=".local-env"
 
@@ -47,10 +53,11 @@ else
 	docker run \
 		--rm \
 		--env BR2_DL_DIR=/opt/dlcache/ \
-		--volume=gadget-build-dlcache:/opt/dlcache/ \
-		--volume=gadget-build-output:/opt/output \
+		--volume=${DL_CACHE_VOL}:/opt/dlcache/ \
+		--volume=${BUILD_OUTPUT_VOL}:/opt/output \
 		--volume=${IMAGE_DIR}:/opt/output/images \
 		--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+		--volume=${GADGET_DIR}/local:/local \
 		--name=gadget-build-task \
 		-w="/opt/gadget-os-proto" \
 		${SSH_FORWARDING} \
@@ -63,6 +70,3 @@ fi
 if [ -n "${SSH_KEY_DIR}" ]; then
 	kill -TERM ${SSH_AGENT_PID}
 fi
-
-#	--env BR2_CCACHE_DIR=/opt/ccache/ \
-#	--volume=gadget-build-ccache:/opt/ccache/ \
