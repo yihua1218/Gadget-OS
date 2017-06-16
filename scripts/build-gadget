@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ID="$(cat "${SCRIPT_DIR}/id")"
@@ -40,10 +40,8 @@ fi
 if [ -n "${SSH_KEY_DIR}" ]; then
 	TMP_DIR="$(pwd)$(mktemp)"
 	mkdir -p ${TMP_DIR}
-#	eval $(ssh-agent -a $(pwd)/.agent_bind_sock)
 	eval $(ssh-agent -a ${TMP_DIR}/.agent_bind_sock)
 	ssh-add ${SSH_KEY_DIR}/id_*
-#	SSH_FORWARDING="-v $(pwd)/.agent_bind_sock:/opt/${TMP_DIR}/.agent_bind_sock -v $(pwd)/${SSH_KEY_DIR}/:/root/.ssh/ --env SSH_AUTH_SOCK=/opt/${TMP_DIR}.agent_bind_sock"
 	SSH_FORWARDING="-v ${TMP_DIR}/.agent_bind_sock:/opt/.agent_bind_sock -v $(pwd)/${SSH_KEY_DIR}/:/root/.ssh/ --env SSH_AUTH_SOCK=/opt/.agent_bind_sock"
 	echo "Using SSH keys: ${SSH_AUTH_SOCK}"
 fi
