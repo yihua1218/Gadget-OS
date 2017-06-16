@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ID="$(cat "${SCRIPT_DIR}/id")"
