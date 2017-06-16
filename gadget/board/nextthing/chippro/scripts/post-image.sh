@@ -34,19 +34,19 @@ NAND_CONFIG="${NAND_CONFIG}.config"
 pushd $BINARIES_DIR
 
 echo "## creating SPL image"
-"${SCRIPTDIR}/mk_spl_image" -N "${NAND_CONFIG}" sunxi-spl.bin
+"${HOST_DIR}/usr/bin/mk_spl_image" -N "${NAND_CONFIG}" sunxi-spl.bin
 
 echo "## creating uboot image"
-"${SCRIPTDIR}/mk_uboot_image" -N "${NAND_CONFIG}" u-boot-dtb.bin
+"${HOST_DIR}/usr/bin/mk_uboot_image" -N "${NAND_CONFIG}" u-boot-dtb.bin
 
 echo "## creating ubifs image"
-"${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs.tar
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs.tar
 
 echo "## creating ubifs image"
-"${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o var.ubifs var.tar
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o var.ubifs var.tar
 
 echo "## creating ubi image"
-"${SCRIPTDIR}/mk_ubi_image" -N "${NAND_CONFIG}" -c "${BOARD_DIR}/configs/ubinize.config" rootfs.ubifs
+"${HOST_DIR}/usr/bin/mk_ubi_image" -N "${NAND_CONFIG}" -c "${BOARD_DIR}/configs/ubinize.config" rootfs.ubifs
 
 ln -sf "spl-$NAND_EBSIZE-$NAND_PSIZE-${NAND_OSIZE}.bin" "$BINARIES_DIR/flash-spl.bin"
 ln -sf "uboot-${NAND_EBSIZE}.bin" "$BINARIES_DIR/flash-uboot.bin"
