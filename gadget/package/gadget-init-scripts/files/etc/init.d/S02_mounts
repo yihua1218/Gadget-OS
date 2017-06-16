@@ -11,7 +11,7 @@ start() {
 	/bin/mount -t configfs none /sys/kernel/config
 	/bin/echo /sbin/mdev > /proc/sys/kernel/hotplug
 	/sbin/mdev -s
-	/bin/mount -t ubifs /dev/ubi0_8 /var
+	/bin/mount -t ubifs /dev/ubi0_8 /data
 }
 
 stop() {

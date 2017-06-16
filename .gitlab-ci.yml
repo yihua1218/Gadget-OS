@@ -1,4 +1,7 @@
-image: ntc-registry.githost.io/nextthingco/buildroot-development-container
+image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
+
+services:
+  - docker:dind
 
 stages:
   - build

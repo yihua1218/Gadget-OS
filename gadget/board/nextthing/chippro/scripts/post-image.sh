@@ -46,7 +46,7 @@ echo "## creating ubifs image"
 "${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs.tar
 
 echo "## creating ubifs image"
-"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o var.ubifs var.tar
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o data.ubifs data.tar
 
 echo "## creating ubi image"
 "${HOST_DIR}/usr/bin/mk_ubi_image" -N "${NAND_CONFIG}" -c "${BOARD_DIR}/configs/ubinize.config" rootfs.ubifs
