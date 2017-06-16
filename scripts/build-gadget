@@ -39,6 +39,7 @@ fi
 
 if [ -n "${SSH_KEY_DIR}" ]; then
 	TMP_DIR="$(mktemp)"
+	mkdir -p ${TMP_DIR}
 #	eval $(ssh-agent -a $(pwd)/.agent_bind_sock)
 	eval $(ssh-agent -a ${TMP_DIR}/.agent_bind_sock)
 	ssh-add ${SSH_KEY_DIR}/id_*
