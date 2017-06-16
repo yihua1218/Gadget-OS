@@ -14,3 +14,8 @@ MKIMAGE=${HOST_DIR}/usr/bin/mkimage
 # EOF
 
 echo "TERM=xterm" | tee -a ${TARGET_DIR}/etc/profile
+
+pushd ${TARGET_DIR}/var
+tar -c ${BINARIES_DIR}/var.tar -c .
+rm -rf ${TARGET_DIR}/var/*
+popd
