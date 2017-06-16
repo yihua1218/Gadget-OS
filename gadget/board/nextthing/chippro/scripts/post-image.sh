@@ -24,7 +24,33 @@ echo "# BASE_DIR=$BASE_DIR"
 ROOT_DIR="${BR2_EXTERNAL_GADGETOS_PATH}"
 BOARD_DIR=${ROOT_DIR}/board/nextthing/chippro
 
-echo PATH=$PATH
-mk_gadget_images -N ${NAND_CONFIG}.config -c "${BOARD_DIR}/configs/ubinize.config" "${BINARIES_DIR}" 
-
+## create U-BOOT SCRIPT
 mkimage -A arm -T script -C none -n "Flash" -d "${BOARD_DIR}/uboot.script.source" "${1}/uboot.script"
+
+
+## create NAND images
+NAND_CONFIG="${NAND_CONFIG}.config"
+
+pushd $BINARIES_DIR
+
+echo "## creating SPL image"
+"${SCRIPTDIR}/mk_spl_image" -N "${NAND_CONFIG}" sunxi-spl.bin
+
+echo "## creating uboot image"
+"${SCRIPTDIR}/mk_uboot_image" -N "${NAND_CONFIG}" u-boot-dtb.bin
+
+echo "## creating ubifs image"
+"${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs.tar
+
+echo "## creating ubifs image"
+"${SCRIPTDIR}/mk_ubifs_image" -N "${NAND_CONFIG}" -o var.ubifs var.tar
+
+echo "## creating ubi image"
+"${SCRIPTDIR}/mk_ubi_image" -N "${NAND_CONFIG}" -c "${BOARD_DIR}/configs/ubinize.config" rootfs.ubifs
+
+ln -sf "spl-$NAND_EBSIZE-$NAND_PSIZE-${NAND_OSIZE}.bin" "$BINARIES_DIR/flash-spl.bin"
+ln -sf "uboot-${NAND_EBSIZE}.bin" "$BINARIES_DIR/flash-uboot.bin"
+ln -sf "chip-$NAND_EBSIZE-${NAND_PSIZE}.ubi.sparse" "$BINARIES_DIR/flash-rootfs.bin"
+
+popd
+
