@@ -33,6 +33,9 @@ NAND_CONFIG="${NAND_CONFIG}.config"
 
 pushd $BINARIES_DIR
 
+source "${HOST_DIR}/usr/bin/chip_nand_scripts_common" 
+read_nand_config "${NAND_CONFIG}"
+
 echo "## creating SPL image"
 "${HOST_DIR}/usr/bin/mk_spl_image" -N "${NAND_CONFIG}" sunxi-spl.bin
 
