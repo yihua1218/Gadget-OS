@@ -1,7 +1,4 @@
-image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
-
-services:
-  - docker:dind
+image: ntc-registry.githost.io/nextthingco/buildroot-development-container
 
 stages:
   - build
@@ -24,7 +21,6 @@ variables:
   no_docker: "something"
 
 build:
-  image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
   stage: build
   script:
     - mkdir ${SSH_KEY_DIR}/
@@ -32,7 +28,6 @@ build:
     - echo "${SSH_KEY_SECRET}" > ${SSH_KEY_DIR}/id_rsa
     - echo "${SSH_CONFIG}" > ${SSH_KEY_DIR}/ssh_config
     - chmod 0600 ${SSH_KEY_DIR}/*
-    - ./wrapdocker
     - scripts/build-gadget make -s chippro_defconfig
     - scripts/build-gadget make -s
     - ls /opt/output/images
