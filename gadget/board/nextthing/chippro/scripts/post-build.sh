@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # ROOT_DIR="$(pwd)"
 ROOT_DIR="${BR2_EXTERNAL_GADGETOS_PATH}"
@@ -25,7 +25,7 @@ pushd ${TARGET_DIR}/etc
 mv ssh ../data/etc/ssh
 ln -s ../data/etc/ssh ssh
 
-mv dnsmasq.conf ../etc/
+mv dnsmasq.conf ../data/etc/
 ln -s ../data/etc/dnsmasq.conf dnsmasq.conf
 popd
 
