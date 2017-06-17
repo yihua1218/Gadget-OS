@@ -24,6 +24,7 @@ variables:
   no_docker: "something"
 
 build:
+  image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
   stage: build
   script:
     - mkdir ${SSH_KEY_DIR}/
