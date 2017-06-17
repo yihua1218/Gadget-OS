@@ -1,8 +1,11 @@
 #!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ID="$(cat "${SCRIPT_DIR}/id")"
-[[ -z "$ID" ]] && "${SCRIPT_DIR}"/init-container
+
+if [ ! -z $no_docker ]; then
+	ID="$(cat "${SCRIPT_DIR}/id")"
+	[[ -z "$ID" ]] && "${SCRIPT_DIR}"/init-container
+fi
 
 if [ -n "${1}" ]; then
 	task="${@}"
