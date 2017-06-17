@@ -6,7 +6,7 @@ stages:
   - upload
 
 variables:
-  GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:master
+  GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:testing
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
   NAND_TYPE: Toshiba_512M_SLC
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${GHVAR_UPLOAD_CONTAINER_BRANCH}
