@@ -9,5 +9,5 @@ ID="$(cat "${SCRIPT_DIR}/id")"
 BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
 DL_CACHE_VOL="gadget-build-dlcache-${ID}"
 
-docker volume rm "${BUILD_OUTPUT_VOL}" && \
+docker volume rm "${BUILD_OUTPUT_VOL}"
 docker volume rm "${DL_CACHE_VOL}"
