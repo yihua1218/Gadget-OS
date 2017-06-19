@@ -17,6 +17,7 @@ TMP_DIR=$(mktemp -d)
 RW_DIR="${TMPDIR}/data"
 RW_ETC="${RW_DIR}/etc"
 RW_VAR="${RW_DIR}/var"
+RW_ROOT="${RW_DIR}/root"
 
 echo "# TARGET_RO_DIR=${TARGET_RO_DIR}"
 
@@ -24,20 +25,24 @@ rm -rf "${TARGET_RO_DIR}"
 cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
 
 mkdir -p "${TARGET_RO_DIR}/data"
-mkdir -p "${RW_ETC}"
+mkdir -p "${RW_ETC}/docker"
 mkdir -p "${RW_VAR}"
+mkdir -p "${RW_ROOT}/.ssh"
 
 pushd "${TARGET_RO_DIR}/etc"
 rm -f resolv.conf && ln -sf /tmp/resolv.conf resolv.conf
 mv ssh "${RW_ETC}/ssh" && ln -sf /data/etc/ssh ssh
 mv dnsmasq.conf "${RW_ETC}/" && ln -sf /data/etc/dnsmasq.conf dnsmasq.conf
+ln -sf /data/etc/docker docker
 popd
 
 pushd "${TARGET_RO_DIR}"
 mv var "${RW_DIR}/"
+mv root/.ssh "${RW_ROOT}"
 ln -sf /data/var var
 ln -sf /tmp /data/tmp
 ln -sf /run /data/run
+ln -sf /root/.ssh /data/root/.ssh
 popd
 
 # Create tar ball for ro rootfs
