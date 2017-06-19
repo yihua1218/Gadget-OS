@@ -43,7 +43,7 @@ echo "## creating uboot image"
 "${HOST_DIR}/usr/bin/mk_uboot_image" -N "${NAND_CONFIG}" u-boot-dtb.bin
 
 echo "## creating ubifs image"
-"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs.tar
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs_ro.tar
 
 echo "## creating ubifs image"
 "${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o data.ubifs data.tar

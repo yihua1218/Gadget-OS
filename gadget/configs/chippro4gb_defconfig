@@ -16,6 +16,7 @@ BR2_TARGET_GENERIC_ROOT_PASSWD="root"
 BR2_ROOTFS_USERS_TABLES="${BR2_EXTERNAL_GADGETOS_PATH}/board/nextthing/chippro/users_table.txt"
 BR2_ROOTFS_OVERLAY="${BR2_EXTERNAL_GADGETOS_PATH}/board/nextthing/chippro/overlay"
 BR2_ROOTFS_POST_BUILD_SCRIPT="${BR2_EXTERNAL_GADGETOS_PATH}/board/nextthing/chippro/scripts/post-build.sh"
+BR2_ROOTFS_POST_FAKEROOT_SCRIPT="${BR2_EXTERNAL_GADGETOS_PATH}/board/nextthing/chippro/scripts/post-fakeroot.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="${BR2_EXTERNAL_GADGETOS_PATH}/board/nextthing/chippro/scripts/post-image.sh"
 BR2_ROOTFS_POST_SCRIPT_ARGS="\"Toshiba-MLC\""
 BR2_LINUX_KERNEL=y
