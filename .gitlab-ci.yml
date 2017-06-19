@@ -22,6 +22,7 @@ variables:
 
 build:
   stage: build
+  tags: [aws-auto-runner]
   script:
     - mkdir ${SSH_KEY_DIR}/
     - ssh-keyscan ntc.githost.io > ${SSH_KEY_DIR}/known_hosts
@@ -42,6 +43,7 @@ build:
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master
   stage: howitzer
+  tags: [aws-auto-runner]
   dependencies:
     - build
   script:
@@ -57,6 +59,7 @@ howitzer:
 upload:
   image: ntc-registry.githost.io/nextthingco/ci-tools:unstable
   stage: upload
+  tags: [aws-auto-runner]
   dependencies:
     - build
     - howitzer
