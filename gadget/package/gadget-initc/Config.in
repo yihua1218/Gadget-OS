@@ -1,0 +1,8 @@
+config BR2_PACKAGE_GADGET_INITC
+	bool "gadget-initc"
+	depends on BR2_PACKAGE_HOST_GO_ARCH_SUPPORTS
+	select BR2_PACKAGE_DOCKER_ENGINE # runtime dependency
+	help
+	  initializes gadget containers to run on boot
+
+	  https://github.com/nextthingco/gadgetcli
