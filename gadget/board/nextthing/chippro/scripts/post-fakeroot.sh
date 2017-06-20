@@ -30,19 +30,22 @@ mkdir -p "${RW_VAR}"
 mkdir -p "${RW_ROOT}/.ssh"
 
 pushd "${TARGET_RO_DIR}/etc"
-rm -f resolv.conf && ln -sf /tmp/resolv.conf resolv.conf
-mv ssh "${RW_ETC}/ssh" && ln -sf /data/etc/ssh ssh
-mv dnsmasq.conf "${RW_ETC}/" && ln -sf /data/etc/dnsmasq.conf dnsmasq.conf
-ln -sf /data/etc/docker docker
+rm -f resolv.conf
+mv ssh "${RW_ETC}/ssh"
+mv dnsmasq.conf "${RW_ETC}/"
+ln -sf /tmp/resolv.conf /etc/resolv.conf
+ln -sf /data/etc/ssh /etc/ssh
+ln -sf /data/etc/dnsmasq.conf /etc/dnsmasq.conf
+ln -sf /data/etc/docker /etc/docker
 popd
 
 pushd "${TARGET_RO_DIR}"
 mv var "${RW_DIR}/"
 mv root/.ssh "${RW_ROOT}"
-ln -sf /data/var var
-ln -sf /tmp /data/tmp
-ln -sf /run /data/run
-ln -sf /root/.ssh /data/root/.ssh
+ln -sf /data/var /var
+ln -sf /data/tmp /tmp
+ln -sf /data/run /run
+ln -sf /data/root/.ssh /root/.ssh
 popd
 
 # Create tar ball for ro rootfs
