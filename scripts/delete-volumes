@@ -2,8 +2,8 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-#ID="$(cat "${SCRIPT_DIR}/id")"
-#[[ -z "$ID" ]] && echo "ERROR: cannot read ID from '${SCRIPT_DIR}/id'" && exit 1
+ID="$(cat "${SCRIPT_DIR}/id")"
+[[ -z "$ID" ]] && echo "ERROR: cannot read ID from '${SCRIPT_DIR}/id'" && exit 1
 
 # Have separate volumes for each checkout of gadget-os
 BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
@@ -11,5 +11,3 @@ DL_CACHE_VOL="gadget-build-dlcache-${ID}"
 
 docker volume rm "${BUILD_OUTPUT_VOL}"
 docker volume rm "${DL_CACHE_VOL}"
-
-exit 1
