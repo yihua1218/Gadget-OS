@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GADGET_INITC_VERSION = 9e638e23a9bc0bec7da565e8f87db3df91ca9655
+GADGET_INITC_VERSION = 9c9fe325e7df0d322998fbd7ac26682780116470
 GADGET_INITC_SITE = ssh://git@ntc.githost.io/nextthingco/gadgetcli
 GADGET_INITC_SITE_METHOD = git
 
@@ -24,6 +24,11 @@ endef
 
 define GADGET_INITC_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/build/linux_arm/gadgetosinit $(TARGET_DIR)/usr/bin/gadget-initc
+endef
+
+define GADGET_INITC_INSTALL_INIT_SYSV
+        $(INSTALL) -m 755 -D package/gadget-initc/S91_gadget_initc \
+                $(TARGET_DIR)/etc/init.d/S91_gadget_initc
 endef
 
 $(eval $(generic-package))
