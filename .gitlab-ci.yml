@@ -29,6 +29,7 @@ build:
     - echo "${SSH_KEY_SECRET}" > ${SSH_KEY_DIR}/id_rsa
     - echo "${SSH_CONFIG}" > ${SSH_KEY_DIR}/ssh_config
     - chmod 0600 ${SSH_KEY_DIR}/*
+    - scripts/delete-volumes
     - scripts/build-gadget make -s chippro_defconfig
     - scripts/build-gadget make -s
     - ls /opt/output/images
