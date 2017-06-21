@@ -26,7 +26,6 @@ cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
 
 mkdir -p "${DATA_ETC}/docker"
 mkdir -p "${DATA_VAR}/empty"
-mkdir -p "${DATA_VAR}/lib/misc"
 mkdir -p "${DATA_ROOT}"
 
 pushd "${TARGET_RO_DIR}/etc"
@@ -41,6 +40,8 @@ pushd "${TARGET_RO_DIR}/"
 
 mv var "${TMP_DATA}/"
 ln -sf data/var var
+mkdir -p "${DATA_VAR}/lib/misc"
+
 
 pushd "${TMP_DATA}/"
 ln -sf ../tmp tmp
