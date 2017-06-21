@@ -27,8 +27,8 @@ cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
 mkdir -p "${TARGET_RO_DIR}/data"
 mkdir -p "${RW_ETC}/docker"
 mkdir -p "${RW_VAR}/empty"
-mkdir -p "${RW_VAR}/misc"
-mkdir -p "${RW_ROOT}/.ssh"
+mkdir -p "${RW_VAR}/lib/misc"
+mkdir -p "${RW_ROOT}"
 
 pushd "${TARGET_RO_DIR}/etc"
 #mv resolv.conf "${RW_ETC}/resolv.conf"
@@ -50,9 +50,12 @@ ln -sf ../tmp tmp
 ln -sf ../run run
 popd
 
+ls -lsah root/
+ls -lsah root/.ssh/
 mv root/.ssh data/root/
 pushd root
 ln -sf ../data/root/.ssh .ssh
+ls -lsah ../data/root/.ssh/*
 popd
 
 popd
