@@ -39,7 +39,7 @@ pushd "${TARGET_RO_DIR}/"
 
 mv var "${TMP_DATA}/"
 ln -sf data/var var
-mkdir -p "${DATA_VAR}/lib/misc"
+#mkdir -p "${DATA_VAR}/lib/misc"
 mkdir -p "${DATA_VAR}/empty"
 
 
