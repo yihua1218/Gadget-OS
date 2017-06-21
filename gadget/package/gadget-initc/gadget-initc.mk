@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-GADGET_INITC_VERSION = 9c9fe325
+GADGET_INITC_VERSION = 9a137eeba873dcaf3f3a6aeb755a7d639b96f98f
 GADGET_INITC_SITE = ssh://git@ntc.githost.io/nextthingco/gadgetcli
 GADGET_INITC_SITE_METHOD = git
 
