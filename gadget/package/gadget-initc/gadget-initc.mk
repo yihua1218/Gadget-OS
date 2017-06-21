@@ -26,4 +26,9 @@ define GADGET_INITC_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/build/linux_arm/gadgetosinit $(TARGET_DIR)/usr/bin/gadget-initc
 endef
 
+define GADGET_INITC_INSTALL_INIT_SYSV
+        $(INSTALL) -m 755 -D package/gadget-initc/S91_gadget_initc \
+                $(TARGET_DIR)/etc/init.d/S91_gadget_initc
+endef
+
 $(eval $(generic-package))

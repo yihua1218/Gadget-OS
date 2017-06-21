@@ -26,7 +26,8 @@ cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
 
 mkdir -p "${TARGET_RO_DIR}/data"
 mkdir -p "${RW_ETC}/docker"
-mkdir -p "${RW_VAR}"
+mkdir -p "${RW_VAR}/empty"
+mkdir -p "${RW_VAR}/misc"
 mkdir -p "${RW_ROOT}/.ssh"
 
 pushd "${TARGET_RO_DIR}/etc"
@@ -51,7 +52,7 @@ popd
 
 mv root/.ssh data/root/
 pushd root
-ln -sf ../data/root/.ssh ssh
+ln -sf ../data/root/.ssh .ssh
 popd
 
 popd
