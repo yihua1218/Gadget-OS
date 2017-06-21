@@ -14,27 +14,24 @@ echo "# BASE_DIR=$BASE_DIR"
 TARGET_RO_DIR="${BASE_DIR}/target_ro"
 
 TMP_DIR=$(mktemp -d)
-RW_DIR="${TMP_DIR}/data"
-RW_ETC="${RW_DIR}/etc"
-RW_VAR="${RW_DIR}/var"
-RW_ROOT="${RW_DIR}/root"
+TMP_DATA="${TMP_DIR}/data"
+DATA_ETC="${TMP_DATA}/etc"
+DATA_VAR="${TMP_DATA}/var"
+DATA_ROOT="${TMP_DATA}/root"
 
 echo "# TARGET_RO_DIR=${TARGET_RO_DIR}"
 
 rm -rf "${TARGET_RO_DIR}"
 cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
 
-mkdir -p "${TARGET_RO_DIR}/data"
-mkdir -p "${RW_ETC}/docker"
-mkdir -p "${RW_VAR}/empty"
-mkdir -p "${RW_VAR}/lib/misc"
-mkdir -p "${RW_ROOT}"
+mkdir -p "${DATA_ETC}/docker"
+mkdir -p "${DATA_VAR}/empty"
+mkdir -p "${DATA_VAR}/lib/misc"
+mkdir -p "${DATA_ROOT}"
 
 pushd "${TARGET_RO_DIR}/etc"
-#mv resolv.conf "${RW_ETC}/resolv.conf"
-mv ssh "${RW_ETC}/ssh"
-mv dnsmasq.conf "${RW_ETC}/"
-#ln -sf ../data/etc/resolv.conf resolv.conf
+mv ssh "${DATA_ETC}/ssh"
+mv dnsmasq.conf "${DATA_ETC}/"
 ln -sf ../data/etc/ssh ssh
 ln -sf ../data/etc/dnsmasq.conf dnsmasq.conf
 ln -sf ../data/etc/docker docker
@@ -42,21 +39,20 @@ popd
 
 pushd "${TARGET_RO_DIR}/"
 
-mv var data/
+mv var "${TMP_DATA}/"
 ln -sf data/var var
 
-pushd data
+pushd "${TMP_DATA}/"
 ln -sf ../tmp tmp
 ln -sf ../run run
 popd
 
-ls -lsah root/
-ls -lsah root/.ssh/
-mkdir -p data/root/.ssh
-cp root/.ssh/authorized_keys data/root/.ssh/authorized_keys
-ls -lsah data/root/.ssh/authorized_keys
-chmod 0600 data/root/.ssh/authorized_keys
-pushd root
+ls -lsah "${TARGET_RO_DIR}/root/.ssh"
+mkdir -p "${DATA_ROOT}/.ssh"
+mv ${TARGET_RO_DIR}/root/.ssh/authorized_keys ${DATA_ROOT}/.ssh/authorized_keys
+ls -lsah ${DATA_ROOT}/.ssh/authorized_keys
+chmod 0600 ${DATA_ROOT}/.ssh/authorized_keys
+pushd ${DATA_ROOT}
 ln -sf ../data/root/.ssh .ssh
 ls -lsah ../data/root/.ssh/*
 popd
@@ -69,7 +65,7 @@ tar -C "${TARGET_RO_DIR}" -c -f "${BINARIES_DIR}/rootfs_ro.tar" .
 
 # Create tar ball for writable partition
 echo "# generating '${BINARIES_DIR}/data.tar'..."
-tar -C "${RW_DIR}" -c -f "${BINARIES_DIR}/data.tar" .
+tar -C "${TMP_DATA}" -c -f "${BINARIES_DIR}/data.tar" .
 
 # Cleanup
 rm -rf "${TMP_DIR}"
