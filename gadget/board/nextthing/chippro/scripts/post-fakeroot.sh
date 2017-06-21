@@ -55,7 +55,6 @@ ls -lsah ${DATA_ROOT}/.ssh/authorized_keys
 chmod 0600 ${DATA_ROOT}/.ssh/authorized_keys
 pushd ${DATA_ROOT}
 ln -sf ../data/root/.ssh .ssh
-ls -lsah ../data/root/.ssh/*
 popd
 
 popd
