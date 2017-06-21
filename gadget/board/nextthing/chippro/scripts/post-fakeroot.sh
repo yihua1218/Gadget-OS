@@ -14,7 +14,7 @@ echo "# BASE_DIR=$BASE_DIR"
 TARGET_RO_DIR="${BASE_DIR}/target_ro"
 
 TMP_DIR=$(mktemp -d)
-RW_DIR="${TMPDIR}/data"
+RW_DIR="${TMP_DIR}/data"
 RW_ETC="${RW_DIR}/etc"
 RW_VAR="${RW_DIR}/var"
 RW_ROOT="${RW_DIR}/root"
