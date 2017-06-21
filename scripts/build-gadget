@@ -40,6 +40,7 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
 fi
 
+rm -rf $(pwd)/.agent_bind_sock
 ps axf | grep ssh-agent | grep -v grep | awk '{print "kill -9 " $1}' | sh
 
 if [ -n "${SSH_KEY_DIR}" ]; then
