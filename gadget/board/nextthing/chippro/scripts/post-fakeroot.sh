@@ -52,7 +52,10 @@ popd
 
 ls -lsah root/
 ls -lsah root/.ssh/
-mv root/.ssh data/root/
+mkdir -p data/root/.ssh
+cp root/.ssh/authorized_keys data/root/.ssh/authorized_keys
+ls -lsah data/root/.ssh/authorized_keys
+chmod 0600 data/root/.ssh/authorized_keys
 pushd root
 ln -sf ../data/root/.ssh .ssh
 ls -lsah ../data/root/.ssh/*
