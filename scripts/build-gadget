@@ -40,7 +40,7 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
 fi
 
-killall -9 ssh-agent
+ps axf | grep ssh-agent | grep -v grep | awk '{print "kill -9 " $1}' | sh
 
 if [ -n "${SSH_KEY_DIR}" ]; then
 #	eval $(ssh-agent -a $(pwd)/.agent_bind_sock) || ( echo "Another build is currently running" && exit 1 )
