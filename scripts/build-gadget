@@ -40,10 +40,7 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
 fi
 
-if [ -n "${SSH_KEY_DIR}" ]; then
-	kill -TERM ${SSH_AGENT_PID}
-fi
-
+killall -9 ssh-agent
 
 if [ -n "${SSH_KEY_DIR}" ]; then
 #	eval $(ssh-agent -a $(pwd)/.agent_bind_sock) || ( echo "Another build is currently running" && exit 1 )
