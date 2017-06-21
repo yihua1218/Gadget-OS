@@ -41,6 +41,11 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 fi
 
 if [ -n "${SSH_KEY_DIR}" ]; then
+	kill -TERM ${SSH_AGENT_PID}
+fi
+
+
+if [ -n "${SSH_KEY_DIR}" ]; then
 #	eval $(ssh-agent -a $(pwd)/.agent_bind_sock) || ( echo "Another build is currently running" && exit 1 )
 	eval $(ssh-agent -a $(pwd)/.agent_bind_sock)
 	ssh-add ${SSH_KEY_DIR}/id_gith*
