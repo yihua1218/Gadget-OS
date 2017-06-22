@@ -23,6 +23,7 @@ echo "# TARGET_RO_DIR=${TARGET_RO_DIR}"
 
 rm -rf "${TARGET_RO_DIR}"
 cp -al "${TARGET_DIR}" "${TARGET_RO_DIR}"
+mkdir -p "${TARGET_RO_DIR}/data"
 
 mkdir -p "${DATA_ETC}/docker"
 mkdir -p "${DATA_ROOT}"
@@ -49,11 +50,11 @@ ln -sf ../run run
 popd
 
 ls -lsah "${TARGET_RO_DIR}/root/.ssh"
-mkdir -p "${DATA_ROOT}/.ssh"
-mv ${TARGET_RO_DIR}/root/.ssh/authorized_keys ${DATA_ROOT}/.ssh/authorized_keys
+#mkdir -p "${DATA_ROOT}/.ssh"
+mv ${TARGET_RO_DIR}/root/.ssh ${DATA_ROOT}/
 ls -lsah ${DATA_ROOT}/.ssh/authorized_keys
 chmod 0600 ${DATA_ROOT}/.ssh/authorized_keys
-pushd ${DATA_ROOT}
+pushd ${TARGET_RO_DIR}/root
 ln -sf ../data/root/.ssh .ssh
 popd
 
