@@ -18,15 +18,6 @@ DATA_ETC="${TMP_DATA}/etc"
 DATA_VAR="${TMP_DATA}/var"
 DATA_ROOT="${TMP_DATA}/root"
 
-INJECT_ARCHIVE="${BINARIES_DIR}/inject.tar"
-mkdir -p "${TMP_DATA}"
-if [[ -f "${INJECT_ARCHIVE}" ]]; then
-echo "## found gadget project to inject..."
-pushd "${TMP_DATA}"
-tar xf "${INJECT_ARCHIVE}"
-popd
-fi
-
 echo "# TARGET_RO_DIR=${TARGET_RO_DIR}"
 
 rm -rf "${TARGET_RO_DIR}"
@@ -47,6 +38,16 @@ popd
 pushd "${TARGET_RO_DIR}/"
 
 mv var "${TMP_DATA}/"
+
+INJECT_ARCHIVE="${BINARIES_DIR}/inject.tar"
+mkdir -p "${TMP_DATA}"
+if [[ -f "${INJECT_ARCHIVE}" ]]; then
+echo "## found gadget project to inject..."
+pushd "${TMP_DATA}"
+tar xf "${INJECT_ARCHIVE}"
+popd
+fi
+
 ln -sf data/var var
 #mkdir -p "${DATA_VAR}/lib/misc"
 mkdir -p "${DATA_VAR}/empty"

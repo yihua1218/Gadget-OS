@@ -11,4 +11,4 @@ RUN ln -s $(which docker) /usr/bin/docker
 
 ADD authorized_keys /root/.ssh/authorized_keys
 
-CMD /usr/sbin/sshd -D & dockerd 
+CMD /usr/sbin/sshd -D & dockerd --storage-driver overlay2
