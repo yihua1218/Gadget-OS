@@ -10,7 +10,6 @@ echo "# BASE_DIR=$BASE_DIR"
 
 ## Move modifiable data to /data and make the output tar
 ## before removing the local content
-
 TARGET_RO_DIR="${BASE_DIR}/target_ro"
 
 TMP_DIR=$(mktemp -d)
@@ -18,6 +17,15 @@ TMP_DATA="${TMP_DIR}/data"
 DATA_ETC="${TMP_DATA}/etc"
 DATA_VAR="${TMP_DATA}/var"
 DATA_ROOT="${TMP_DATA}/root"
+
+INJECT_ARCHIVE="${BINARIES_DIR}/inject.tar"
+mkdir -p "${TMP_DATA}"
+if [[ -f "${INJECT_ARCHIVE}" ]]; then
+echo "## found gadget project to inject..."
+pushd "${TMP_DATA}"
+tar xf "${INJECT_ARCHIVE}"
+popd
+fi
 
 echo "# TARGET_RO_DIR=${TARGET_RO_DIR}"
 

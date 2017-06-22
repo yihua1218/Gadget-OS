@@ -3,7 +3,9 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 SSH_PORT=27182
-GADGET_ADDR=127.0.0.1:$SSH_PORT
+
+# NOTE: this *needs* to be exported because it's read in the gadget sub-process
+export GADGET_ADDR=127.0.0.1:$SSH_PORT
 
 PUBLIC_KEY="${SCRIPT_DIR}/../gadget/package/gadget-setup-ssh-key/files/id_rsa.pub"
 
@@ -54,6 +56,7 @@ echo "####################################################"
 echo "## build container which emulates a gadget device ##"
 echo "####################################################"
 cp -va "${PUBLIC_KEY}" "${TMP_DIR}"/authorized_keys || exit 1
+cat "${TMP_DIR}"/authorized_keys 
 cp -va "${EMU_DOCKERFILE}" "${TMP_DIR}"/Dockerfile || exit 1
 pushd "${TMP_DIR}"
 ls -l
@@ -64,7 +67,7 @@ echo
 echo "#####################################"
 echo "## start emulated device container ##"
 echo "#####################################"
-echo docker run -p $SSH_PORT:22 -d --privileged --rm --name ${CONTAINER_NAME} -v "${OUTPUT_DIR}":/output ${IMAGE_NAME} || exit 1
+echo docker run -p $SSH_PORT:22 -d --privileged --rm --name ${CONTAINER_NAME} -v "${OUTPUT_DIR}":/output ${IMAGE_NAME}
 docker run -p $SSH_PORT:22 -d --privileged --rm --name ${CONTAINER_NAME} -v "${OUTPUT_DIR}":/output ${IMAGE_NAME} || exit 1
 
 # give the container some time to startup and show some entertainment
@@ -79,8 +82,8 @@ echo "################################################"
 echo "## deploy gadget project onto emulated device ##"
 echo "################################################"
 pushd "${PROJECT_DIR}"
-gadget build
-gadget deploy
+gadget build || exit 1
+gadget -v deploy
 popd
 
 echo
@@ -90,12 +93,9 @@ echo "######################"
 docker exec ${CONTAINER_NAME} cp -va --parents /etc/docker /output/
 docker exec ${CONTAINER_NAME} cp -va --parents /var/lib/docker /output/
 docker exec ${CONTAINER_NAME} cp -va --parents /var/lib/gadget /output/
-
-echo
-echo "#####################"
-echo "## create tar file ##"
-echo "#####################"
-tar cvf output/images/inject.tar -C $OUTPUT_DIR .
+docker exec ${CONTAINER_NAME} tar --version
+docker exec ${CONTAINER_NAME} tar cvf /output/inject.tar -C /output .
+cp ${OUTPUT_DIR}/inject.tar output/images/
 
 echo
 echo "###################"

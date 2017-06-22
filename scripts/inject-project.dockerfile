@@ -1,6 +1,6 @@
 FROM docker:dind
 
-RUN apk add --update openssh
+RUN apk add --update openssh tar
 
 RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
 RUN ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa

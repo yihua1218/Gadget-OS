@@ -19,7 +19,7 @@ IMAGE_DIR="$(pwd)/output/images"
 GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
 BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
 DL_CACHE_VOL="gadget-build-dlcache-${ID}"
-
+TMP_VOL="gadget-build-tmp-${ID}"
 
 ENVIRONMENT_FILE=".local-env"
 
@@ -62,6 +62,7 @@ else
 		--volume=${IMAGE_DIR}:/opt/output/images \
 		--volume=${GADGET_DIR}:/opt/gadget-os-proto \
 		--volume=${GADGET_DIR}/local:/local \
+		--volume=${TMP_VOL}:/tmp \
 		--name=gadget-build-task \
 		-w="/opt/gadget-os-proto" \
 		${SSH_FORWARDING} \
