@@ -49,7 +49,7 @@ popd
 fi
 
 ln -sf data/var var
-#mkdir -p "${DATA_VAR}/lib/misc"
+mkdir -p "${DATA_VAR}/lib/gadget"
 mkdir -p "${DATA_VAR}/empty"
 
 
@@ -59,7 +59,6 @@ ln -sf ../run run
 popd
 
 ls -lsah "${TARGET_RO_DIR}/root/.ssh"
-#mkdir -p "${DATA_ROOT}/.ssh"
 mv ${TARGET_RO_DIR}/root/.ssh ${DATA_ROOT}/
 ls -lsah ${DATA_ROOT}/.ssh/authorized_keys
 chmod 0600 ${DATA_ROOT}/.ssh/authorized_keys
