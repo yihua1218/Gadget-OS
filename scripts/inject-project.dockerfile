@@ -6,6 +6,9 @@ RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
 RUN ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
 RUN ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa
 RUN mkdir -p /var/run/sshd
+RUN mkdir -p /data/root/
+RUN rmdir /root
+RUN ln -s /data/root /root
 
 RUN ln -s $(which docker) /usr/bin/docker
 

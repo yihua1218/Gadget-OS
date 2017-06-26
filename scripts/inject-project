@@ -90,11 +90,11 @@ echo
 echo "######################"
 echo "## copying data out ##"
 echo "######################"
-docker exec ${CONTAINER_NAME} cp -va --parents /etc/docker /output/
-docker exec ${CONTAINER_NAME} cp -va --parents /var/lib/docker /output/
-docker exec ${CONTAINER_NAME} cp -va --parents /var/lib/gadget /output/
-docker exec ${CONTAINER_NAME} tar --version
-docker exec ${CONTAINER_NAME} tar cvf /output/inject.tar -C /output .
+echo "creating tar file..."
+docker exec ${CONTAINER_NAME} tar cf /output/inject.tar --ignore-failed-read -C / \
+/etc/docker \
+/var/lib/docker \
+/var/lib/gadget 
 cp ${OUTPUT_DIR}/inject.tar output/images/
 
 echo
