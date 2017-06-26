@@ -2,7 +2,7 @@
 RETVAL=0
 
 start() {
-	/usr/bin/dockerd -g /data/var/lib/docker &
+	/usr/bin/dockerd -g $(readlink -f /var/lib/docker) &
 }
 
 stop() {
