@@ -2,6 +2,10 @@
 RETVAL=0
 
 start() {
+        echo gadget-initc waiting for dockerd
+        while ! docker ps -a >/dev/null; do sleep 1; done
+        sleep 1
+        echo gadget-initc: dockerd is up
         /usr/bin/gadget-initc init &
 }
 
