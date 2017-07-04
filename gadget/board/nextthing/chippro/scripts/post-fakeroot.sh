@@ -50,6 +50,7 @@ fi
 
 ln -sf data/var var
 mkdir -p "${DATA_VAR}/lib/gadget"
+mkdir -p "${DATA_VAR}/lib/docker"
 mkdir -p "${DATA_VAR}/empty"
 
 
