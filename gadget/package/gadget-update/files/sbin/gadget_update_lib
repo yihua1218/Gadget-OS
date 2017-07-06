@@ -1,0 +1,81 @@
+#!/bin/sh
+
+function next_fd()
+{
+    local FD=0
+    while [ -e /proc/$$/fd/$FD ]; do
+        FD=$((FD+1))
+    done
+    echo $FD
+}
+
+function mutex()
+{
+    local LOCKFILE=${1:?"ERROR: specify lock file name"}
+    local FD=$(next_fd)
+
+    eval "exec $FD>$LOCKFILE"
+    ! flock -n $FD && fatal "ERROR: already running (lock file '$1')"
+    echo $$ 1>&$FD
+}
+
+function init_tmpdir()
+{
+    export _TMPDIR="$(mktemp -d /tmp/gadget-update-XXXXXX)"
+    [[ ! -d "${_TMPDIR}" ]] && fatal "ERROR: cannot create temporary directory"
+}
+
+function fatal()
+{
+    MSG=${1:-ERROR}
+    RETURN=${2:-1}
+
+#    [[ -d "${_TMPDIR}" ]] && rm -rf "${_TMPDIR}"
+    
+    echo "$MSG"
+    exit $RETURN
+}
+
+function hex2bin()
+{
+    while read -n2 c; do
+        echo -ne "\x$c"
+    done
+}
+
+function read_cfg()
+{
+    name=$1
+    input_file=$2
+
+    [[ -z "$1" ]] && echo -e "ERROR: read_cfg(): name empty" && return 1
+    [[ -z "$2" ]] && echo -e "ERROR: read_cfg(): input file empty" && return 1
+
+    sections=""
+    while read -r l; do
+    
+        l="${l//[/\[}"          # escape [
+        l="${l//]/\]}"          # escape ]
+        #TODO: make secure & escape way more here!!
+    
+        [[ "${l##\\[}" != "$l" ]] &&  [[ "${l%%\\]*}" != "$l" ]] \
+            && section="${l##\\[}" && section="${section%%\\]*}" \
+            && sections="$sections $section" \
+            && continue
+    
+        l="${l//;*/}"                      # remove comments with ;
+        l="${l//\    =/=}"                 # remove tabs before =
+        l="${l//=\   /=}"                  # remove tabs be =
+        l="${l//\ =\ /=}"                  # remove anything with a space around =
+        key="${l%%=*}"
+        value="${l##*=}"
+    
+        [[ -z "$key" ]] && continue
+        [[ -z "$value" ]] && continue
+    
+        #echo "${name}_${section}_${key}=$value"
+        export "${name}_${section}_${key}"="$value"
+    done < "${input_file}"
+
+    return 0
+}

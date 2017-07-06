@@ -1,0 +1,34 @@
+#!/bin/sh
+RETVAL=0
+
+start() {
+        echo gadget-initc waiting for dockerd
+        while ! docker ps -a >/dev/null; do sleep 1; done
+        sleep 1
+        echo gadget-initc: dockerd is up
+        /usr/bin/gadget-initc init &
+}
+
+stop() {
+        echo "Nothing to do"
+}
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        status)
+                status $processname
+                RETVAL=$?
+                ;;
+        restart)
+                stop
+                start
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|status|restart}"
+                ;;
+esac
+exit $RETVAL

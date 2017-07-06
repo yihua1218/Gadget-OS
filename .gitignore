@@ -1,2 +1,6 @@
 output/
 .local-env
+scripts/id
+local/
+local.dmg.sparseimage
+home/

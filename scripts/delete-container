@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+ID="$(cat "${SCRIPT_DIR}/id")"
+[[ -z "$ID" ]] && echo "ERROR: cannot read ID from '${SCRIPT_DIR}/id'" && exit 1
+
+# The container is needed only once
+GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
+
+docker rmi ${GADGET_CONTAINER} && \
+"${SCRIPT_DIR}"/delete-volumes

@@ -1,0 +1,69 @@
+#!/bin/sh
+
+SYSTEM_CFG="/etc/gadget-update/system.cfg"
+MANIFEST="$1"
+MANIFEST_DIR="$(dirname "${MANIFEST}")"
+
+USAGE="USAGE: $0 [manifest file]\n"
+
+[[ -z "${SYSTEM_CFG}" ]] && echo "SYSTEM_CFG is not set" && exit 1
+[[ ! -f "${SYSTEM_CFG}" ]] && echo "ERROR: cannot read \"$1\"" && exit 1
+[[ -z "${MANIFEST}" ]] && echo -e "$USAGE" && exit 1
+[[ ! -f "${MANIFEST}" ]] && echo "ERROR: cannot read \"$1\"" && exit 1
+
+
+
+echo "reading system configuration..."
+! read_cfg sys "${SYSTEM_CFG}" && exit 1
+ACTIVE=$(get_active_slot)
+INACTIVE=$(get_inactive_slot)
+
+echo
+echo "active slot: ${ACTIVE}"
+echo "inactive slot: ${INACTIVE}"
+
+eval "dest_kernel=\$sys_slot_${INACTIVE}_kernel"
+eval "dest_rootfs=\$sys_slot_${INACTIVE}_rootfs"
+eval "dest_fdt=\$sys_slot_${INACTIVE}_fdt"
+
+echo "dest_kernel=${dest_kernel}"
+echo "dest_fdt=${dest_fdt}"
+echo "dest_rootfs=${dest_rootfs}"
+
+echo
+echo "reading ${MANIFEST}..."
+! read_cfg manifest "${MANIFEST}" && exit 1
+
+# for now assume image files are in same dir as manifest
+export manifest_kernel_file="${MANIFEST_DIR}/${manifest_kernel_file}"
+export manifest_fdt_file="${MANIFEST_DIR}/${manifest_fdt_file}"
+export manifest_rootfs_file="${MANIFEST_DIR}/${manifest_rootfs_file}"
+
+echo
+echo "manifest_kernel_file=${manifest_kernel_file}"
+echo "manifest_fdt_file=${manifest_fdt_file}"
+echo "manifest_rootfs_file=${manifest_rootfs_file}"
+
+[[ ! -f "${manifest_kernel_file}" ]] && echo "ERROR: ${manifest_kernel_file} does not exist" && exit 1
+[[ ! -f "${manifest_fdt_file}" ]] && echo "ERROR: ${manifest_fdt_file} does not exist" && exit 1
+[[ ! -f "${manifest_rootfs_file}" ]] && echo "ERROR: ${manifest_rootfs_file} does not exist" && exit 1
+
+echo
+echo "apply update:"
+echo -n "write ${manifest_kernel_file} to ${dest_kernel}..."
+! ubiupdatevol ${dest_kernel} ${manifest_kernel_file} && echo "ERROR" && exit 1
+echo "OK"
+echo -n "write ${manifest_fdt_file} to ${dest_fdt}..."
+! ubiupdatevol ${dest_fdt} ${manifest_fdt_file} && echo "ERROR" && exit 1
+echo "OK"
+echo -n "write ${manifest_rootfs_file} to ${dest_rootfs}..."
+! ubiupdatevol ${dest_rootfs} ${manifest_rootfs_file} && echo "ERROR" && exit 1
+echo "OK"
+
+echo
+echo -n "set active slot: $INACTIVE..."
+! set_active_slot_uboot $INACTIVE && echo "ERROR" && exit 1
+echo "OK"
+
+echo
+echo "reboot to apply update"

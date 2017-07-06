@@ -1,0 +1,10 @@
+#!/bin/sh
+
+CMDLINE=$(cat /proc/cmdline)
+
+ACTIVE_SLOT=${CMDLINE##*active_slot=}
+ACTIVE_SLOT=${ACTIVE_SLOT%% *}
+
+export ACTIVE_SLOT
+
+echo "$ACTIVE_SLOT"

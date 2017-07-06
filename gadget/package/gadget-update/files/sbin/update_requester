@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# include script lib
+SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"
+. "$SCRIPTDIR/gadget_update_lib"
+
+init_tmpdir
+mutex /var/run/update_requester
+
+echo -e "\nUPDATE_REQUESTER\n"
+
+[[ ! -x $(which curl) ]] && fatal "ERROR: cannot find curl"
+[[ ! -x $(which cat) ]] && fatal "ERROR: cannot find cat"
+[[ ! -x $(which openssl) ]] && fatal "ERROR: cannot find openssl"
+[[ ! -x $(which jq) ]] && fatal "ERROR: cannot find jq"
+[[ ! -x $(which sha256sum) ]] && fatal "ERROR: cannot find sha256sum"
+
+SYSTEM_CFG="/etc/gadget-update/system.cfg"
+[[ -z "${SYSTEM_CFG}" ]] && fatal "SYSTEM_CFG is not set"
+echo -n "Reading system configuration..."
+[[ ! -f "${SYSTEM_CFG}" ]] && fatal "ERROR: cannot read \"$SYSTEM_CFG\""
+! read_cfg cfg "${SYSTEM_CFG}" && fatal "ERROR: failed to read \"$SYSTEM_CFG\""
+echo "OK"
+
+[[ -z "${cfg_system_ca_chain}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
+[[ -z "${cfg_system_server_url}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing server_url setting"
+[[ -z "${cfg_system_workdir}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing workdir setting"
+
+URL="${cfg_system_server_url}"
+ADDR=${URL##*//}; ADDR=${ADDR%%/*};
+WORKDIR="${cfg_system_workdir}"
+MANIFEST="$WORKDIR/manifest"
+PUBKEY="$_TMPDIR/server.pub"
+CERT="$_TMPDIR/server.crt"
+SIGNATURE="$_TMPDIR/signature.bin"
+ARTIFACTS="$_TMPDIR/artifacts"
+
+[[ ! -d $WORKDIR ]] && ! mkdir -p "$WORKDIR" && fatal "ERROR: cannot create directory '$WORKDIR'"
+
+## GET UPDATE SERVER CERT
+echo -n "Retrieving update server certificate from $ADDR..."
+! openssl s_client -CAfile ${cfg_system_ca_chain} -connect "${ADDR}" 2>&1 </dev/null | sed -ne '/BEGIN CERT/,/END CERT/p' >"${CERT}" && fatal "ERROR: cannot get server cert"
+[[ -z "$(cat "${CERT}")" ]] && fatal "ERROR: cannot get server cert"
+echo "OK"
+
+## VERIFY SERVER CERT
+echo -n "Verifiying..."
+! openssl verify -CAfile "${cfg_system_ca_chain}" "${CERT}" 2>&1 >/dev/null && fatal
+echo "OK"
+
+## EXTRACT PUBLIC KEY
+echo -n "Extracting public key..."
+! openssl x509 -in "${CERT}" -pubkey -noout 2>/dev/null > "${PUBKEY}" && fatal "ERROR: cannot extract server public key"
+[[ -z "$(cat "${PUBKEY}")" ]] && fatal "ERROR: cannot get extract public key"
+echo "OK"
+
+## REQUEST UPDATE
+echo -n "Requesting update from $URL..."
+! curl --cacert "${cfg_system_ca_chain}" -so "$MANIFEST" ${URL} && fatal
+echo "OK"
+
+## UPDATE AVAILABLE?
+N_ARTIFACTS=$( jq '.Artifacts | length' <$MANIFEST )
+[[ -z "$N_ARTIFACTS" ]] && fatal "No update available."
+[[ "$N_ARTIFACTS" -le "1" ]] && fatal "No update available."
+echo "Number of Artifacts: $N_ARTIFACTS"
+
+## VERIFY UPDATE
+echo -n "Verifying signature..."
+[[ ! -f "${PUBKEY}" ]] && fatal "ERROR: cannot read '${PUBKEY}'"
+! cat "$MANIFEST"| jq -r '.Signature' | hex2bin >"${SIGNATURE}" && fatal "ERROR: cannot convert signature to binary file"
+! cat "$MANIFEST" |jq -cM '.Artifacts'> "${ARTIFACTS}" && fatal "ERROR: cannot read artifacts"
+! openssl dgst -sha256  -verify "${PUBKEY}" -signature "${SIGNATURE}" "${ARTIFACTS}" && fatal "ERROR: manifest not valid"
+echo "OK"
+
+## APPLY UPDATE
+updater "$MANIFEST"

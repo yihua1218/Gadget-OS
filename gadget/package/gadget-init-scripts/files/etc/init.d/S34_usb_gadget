@@ -41,8 +41,13 @@ if [ ! -z $bootarg_ip ] &&\
 fi
 
 if [ $(cat /etc/dnsmasq.conf | grep HOST1) ]; then	# First boot setup
-	sed -i "s%HOST1%$host_mac1%g" /etc/dnsmasq.conf
-	sed -i "s%HOST2%$host_mac2%g" /etc/dnsmasq.conf
+	sed "s%HOST1%$host_mac1%g" /etc/dnsmasq.conf > /var/tmpdns
+	sed -i "s%HOST2%$host_mac2%g" /var/tmpdns
+	if [ -d /data ]; then
+		mv /var/tmpdns /data/etc/dnsmasq.conf
+	else
+		mv /var/tmpdns /etc/dnsmasq.conf
+	fi
 fi
 
 gadget_usb_up() {

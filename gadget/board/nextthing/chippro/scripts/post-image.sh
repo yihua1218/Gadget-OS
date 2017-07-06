@@ -1,56 +1,59 @@
 #!/bin/bash
 
-read_config() {
-	echo "${1}"
-	grep "${1}=" ${BR2_CONFIG} | sed -e 's/^[A-Za-z0-9_]\+=\(.*\)$/\1/'
-}
+NAND_CONFIG=$2
 
-# ROOT_DIR="$(pwd)/../gadget"
+# Environment variables passed in from buildroot:
+# BR2_CONFIG, HOST_DIR, STAGING_DIR, TARGET_DIR, BUILD_DIR, BINARIES_DIR and BASE_DIR.
+
+echo "##############################################################################"
+echo "## $0 "
+echo "##############################################################################"
+
+echo "# \$1 = $1"
+echo "# \$2 = $2"
+
+echo "# NAND_CONFIG = $NAND_CONFIG"
+echo "# BR2_CONFIG=$BR2_CONFIG"
+echo "# HOST_DIR=$HOST_DIR"
+echo "# STAGING_DIR=$STAGING_DIR"
+echo "# TARGET_DIR=$TARGET_DIR"
+echo "# BUILD_DIR=$BUILD_DIR"
+echo "# BINARIES_DIR=$BINARIES_DIR"
+echo "# BASE_DIR=$BASE_DIR"
+
 ROOT_DIR="${BR2_EXTERNAL_GADGETOS_PATH}"
 BOARD_DIR=${ROOT_DIR}/board/nextthing/chippro
 
-IMAGE_TYPE="${2}"
-if [ -n "${IMAGE_TYPE}" ]; then
-	IMAGE_CONFIG_FILE="${BOARD_DIR}/configs/nand/${IMAGE_TYPE}.config"
-	echo "Image type: ${IMAGE_TYPE}"
+## create U-BOOT SCRIPT
+mkimage -A arm -T script -C none -n "Flash" -d "${BOARD_DIR}/uboot.script.source" "${1}/uboot.script"
 
-	if [ ! -f "${IMAGE_CONFIG_FILE}" ]; then
-		echo -e "Selected NAND type: ${IMAGE_TYPE} but config file does not exist:"
-		echo -e "\t${IMAGE_CONFIG_FILE}"
-		exit 1
-	fi
 
-	echo "Loading config file: ${IMAGE_CONFIG_FILE}"
-	source "${IMAGE_CONFIG_FILE}"
+## create NAND images
+NAND_CONFIG="${NAND_CONFIG}.config"
 
-	IMG2SIMG=$(which img2simg)
-	if [ -z "${IMG2SIMG}" ]; then
-		echo -e "ERROR: Please install 'img2simg' using your distribution's package manager."
-		echo -e "\tThis is likely located inside of the 'android-tools-fsutils' package"
-		exit 1
-	else
-		echo -e "Writing sparse ubi image for nand type: ${IMAGE_TYPE}"
-		echo -e "\terase block size: ${NAND_ERASE_BLOCK_SIZE}"
-		${IMG2SIMG} ${BINARIES_DIR}/rootfs.ubi ${BINARIES_DIR}/rootfs.ubi.sparse "${NAND_ERASE_BLOCK_SIZE}"
-	fi
+pushd $BINARIES_DIR
 
-	NAND_ERASE_BLOCK_SIZE=${NAND_ERASE_BLOCK_SIZE} NAND_PAGE_SIZE=${NAND_PAGE_SIZE} NAND_OOB_SIZE=${NAND_OOB_SIZE} ${BOARD_DIR}/scripts/chip-create-nand-images.sh "${BASE_DIR}"
-else
-	echo "No nand type selected. Not generating sparse image"
-fi
+source "${HOST_DIR}/usr/bin/chip_nand_scripts_common" 
+read_nand_config "${NAND_CONFIG}"
 
-cat <<-EOF > ${1}/uboot.script.source
-	mw \${scriptaddr} 0x0
-	sleep 4
-	fastboot 0
-	setenv boot_kernel 'bootz \${kernel_addr_r} - \${fdt_addr_r}'
-	setenv boot_ubi 'run read_kernel; run read_fdt; run boot_kernel'
-	setenv bootargs 'root=ubi0:rootfs rootfstype=ubifs rw ubi.mtd=4 lpj=5009408 ubi.fm_autoconvert=1 quiet'
-	setenv bootcmd 'run boot_ubi'
-	setenv read_fdt 'ubi read \${fdt_addr_r} fdt'
-	setenv read_kernel 'ubi read \${kernel_addr_r} kernel'
-	ubi part UBI
-	boot
-EOF
+echo "## creating SPL image"
+"${HOST_DIR}/usr/bin/mk_spl_image" -N "${NAND_CONFIG}" sunxi-spl.bin
 
-mkimage -A arm -T script -C none -n "Flash CHIP Pro" -d "${1}/uboot.script.source" "${1}/uboot.script"
+echo "## creating uboot image"
+"${HOST_DIR}/usr/bin/mk_uboot_image" -N "${NAND_CONFIG}" u-boot-dtb.bin
+
+echo "## creating ubifs image"
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o rootfs.ubifs rootfs_ro.tar
+
+echo "## creating ubifs image"
+"${HOST_DIR}/usr/bin/mk_ubifs_image" -N "${NAND_CONFIG}" -o data.ubifs data.tar
+
+echo "## creating ubi image"
+"${HOST_DIR}/usr/bin/mk_ubi_image" -N "${NAND_CONFIG}" -c "${BOARD_DIR}/configs/ubinize.config" rootfs.ubifs
+
+ln -sf "spl-$NAND_EBSIZE-$NAND_PSIZE-${NAND_OSIZE}.bin" "$BINARIES_DIR/flash-spl.bin"
+ln -sf "uboot-${NAND_EBSIZE}.bin" "$BINARIES_DIR/flash-uboot.bin"
+ln -sf "chip-$NAND_EBSIZE-${NAND_PSIZE}.ubi.sparse" "$BINARIES_DIR/flash-rootfs.bin"
+
+popd
+

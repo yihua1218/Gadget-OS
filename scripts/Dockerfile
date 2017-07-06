@@ -26,5 +26,5 @@ RUN apt update && \
 	make -C /opt/sunxi-tools sunxi-nand-image-builder && \
 	cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin && \
 	mkdir -p /opt/buildroot && \
-	wget -P /opt "https://github.com/buildroot/buildroot/archive/2016.11.tar.gz" && \
-	tar -C /opt/buildroot -xzf /opt/2016.11.tar.gz --strip-components=1
+	wget -P /opt "https://github.com/buildroot/buildroot/archive/2017.05.tar.gz" && \
+	tar -C /opt/buildroot -xzf /opt/2017.05.tar.gz --strip-components=1

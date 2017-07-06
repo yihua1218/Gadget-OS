@@ -1,0 +1,110 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+SSH_PORT=27182
+
+# NOTE: this *needs* to be exported because it's read in the gadget sub-process
+export GADGET_ADDR=127.0.0.1:$SSH_PORT
+
+PUBLIC_KEY="${SCRIPT_DIR}/../gadget/package/gadget-setup-ssh-key/files/id_rsa.pub"
+
+TMP_DIR=$(mktemp -d /tmp/gadget-inject-project-XXXXXX)
+
+PROJECT_DIR="${PROJECT_DIR:-$1}"
+PROJECT_DIR="${PROJECT_DIR:-${SCRIPT_DIR}/myproject}"
+
+OUTPUT_DIR="${OUTPUT_DIR:-${TMP_DIR}/output}"
+
+mkdir -p "${OUTPUT_DIR}"
+
+IMAGE_NAME=gadget-inject-image
+CONTAINER_NAME=gadget-inject-container
+
+EMU_DOCKERFILE="${SCRIPT_DIR}/inject-project.dockerfile"
+
+function cleanup()
+{
+    docker kill ${CONTAINER_NAME}
+    docker rmi ${IMAGE_NAME} 
+}
+
+echo
+echo "###########################################"
+echo "## GADGET INJECT PROJECT                 ##"
+echo "###########################################"
+echo "PROJECT_DIR=$PROJECT_DIR"
+echo "OUTPUT_DIR=$OUTPUT_DIR"
+
+[[ ! -d "${PROJECT_DIR}" ]] && echo "ERROR: PROJECT_DIR '$PROJECT_DIR' does not exist" && exit 1
+[[ ! -d "${OUTPUT_DIR}" ]] && echo "ERROR: OUTPUT_DIR '$OUTPUT_DIR' does not exist" && exit 1
+[[ ! -f "${EMU_DOCKERFILE}" ]] && echo "ERROR: EMU_DOCKERFILE '$EMU_DOCKERFILE' does not exist" && exit 1
+[[ ! -f "${PUBLIC_KEY}" ]] && echo "ERROR: PUBLIC_KEY '$PUBLIC_KEY' does not exist" && exit 1
+
+[[ ! -x "$(which docker)" ]] && echo "ERROR: cannot find docker" && exit 1
+[[ ! -x "$(which gadget)" ]] && echo "ERROR: cannot find gadget" && exit 1
+
+
+echo
+echo "###############################################"
+echo "## cleanup potential leftovers from last run ##"
+echo "###############################################"
+cleanup
+
+echo
+echo "####################################################"
+echo "## build container which emulates a gadget device ##"
+echo "####################################################"
+cp -va "${PUBLIC_KEY}" "${TMP_DIR}"/authorized_keys || exit 1
+cat "${TMP_DIR}"/authorized_keys 
+cp -va "${EMU_DOCKERFILE}" "${TMP_DIR}"/Dockerfile || exit 1
+pushd "${TMP_DIR}"
+ls -l
+docker build -t ${IMAGE_NAME} . || exit 1
+popd
+
+echo
+echo "#####################################"
+echo "## start emulated device container ##"
+echo "#####################################"
+echo docker run -p $SSH_PORT:22 -d --privileged --rm --name ${CONTAINER_NAME} -v "${OUTPUT_DIR}":/output ${IMAGE_NAME}
+docker run -p $SSH_PORT:22 -d --privileged --rm --name ${CONTAINER_NAME} -v "${OUTPUT_DIR}":/output ${IMAGE_NAME} || exit 1
+
+# give the container some time to startup and show some entertainment
+for ((C=4; C>=0; C--)) do
+   echo -n "$C..."
+   sleep 1
+done
+echo "GO!"
+
+echo
+echo "################################################"
+echo "## deploy gadget project onto emulated device ##"
+echo "################################################"
+pushd "${PROJECT_DIR}"
+gadget build || exit 1
+gadget -v deploy
+popd
+
+echo
+echo "######################"
+echo "## copying data out ##"
+echo "######################"
+echo "creating tar file..."
+docker exec ${CONTAINER_NAME} tar cf /output/inject.tar --ignore-failed-read -C / \
+/etc/docker \
+/var/lib/docker \
+/var/lib/gadget 
+cp ${OUTPUT_DIR}/inject.tar output/images/
+
+echo
+echo "###################"
+echo "## cleanining up ##"
+echo "###################"
+cleanup
+
+echo
+echo "###########"
+echo "## DONE! ##"
+echo "###########"
+echo

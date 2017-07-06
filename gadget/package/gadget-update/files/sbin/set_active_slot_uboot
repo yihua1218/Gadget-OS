@@ -1,0 +1,12 @@
+#!/bin/sh
+
+USAGE="USAGE: $0 [SLOT]\n\n SLOT can be 'a' or 'b'\n"
+
+[[ -z "$1" ]] && echo -e "$USAGE" && exit 1
+SLOT=$1
+
+[[ "$SLOT" != "a" ]] && [[ "$SLOT" != "b" ]] && echo -e "$USAGE" && exit 2
+
+[[ -z "$(which fw_setenv)" ]] && echo "ERROR: fw_setenv not found!" && exit 3
+
+fw_setenv active_slot "$SLOT"

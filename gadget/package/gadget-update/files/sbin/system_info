@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo -e "$(cat /etc/gadget-update/system.cfg)\n\n$(system_id)\n\n[os-release]\n$(cat /etc/os-release)"

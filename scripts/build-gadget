@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ -z "$no_docker" ]; then
+	ID="$(cat "${SCRIPT_DIR}/id")"
+	[[ -z "$ID" ]] && "${SCRIPT_DIR}"/init-container
+fi
+
 if [ -n "${1}" ]; then
 	task="${@}"
 else
@@ -7,7 +15,12 @@ fi
 
 GADGET_DIR="$(pwd)/"
 IMAGE_DIR="$(pwd)/output/images"
-GADGET_CONTAINER=gadget-build-container #${GADGET_CONTAINER:-gadget-build-container}
+
+GADGET_CONTAINER=${GADGET_CONTAINER:-"gadget-build-container"}
+BUILD_OUTPUT_VOL="gadget-build-output-${ID}"
+DL_CACHE_VOL="gadget-build-dlcache-${ID}"
+TMP_VOL="gadget-build-tmp-${ID}"
+
 ENVIRONMENT_FILE=".local-env"
 
 INTERACTIVE=""
@@ -27,21 +40,38 @@ if [ -f "${ENVIRONMENT_FILE}" ]; then
 	LOCAL_ENV="--env-file ${ENVIRONMENT_FILE}"
 fi
 
+if [ -n "${SSH_KEY_DIR}" ]; then
+#	eval $(ssh-agent -a $(pwd)/.agent_bind_sock) || ( echo "Another build is currently running" && exit 1 )
+	eval $(ssh-agent -a $(pwd)/.agent_bind_sock)
+	ssh-add ${SSH_KEY_DIR}/id*
+	SSH_FORWARDING="-v $(pwd)/.agent_bind_sock:/opt/.agent_bind_sock -v $(pwd)/${SSH_KEY_DIR}/:/root/.ssh/ --env SSH_AUTH_SOCK=/opt/.agent_bind_sock"
+	echo "Using SSH keys: ${SSH_AUTH_SOCK}"
+fi
 
-docker run \
-	--rm \
-	--env BR2_DL_DIR=/opt/dlcache/ \
-	--volume=gadget-build-dlcache:/opt/dlcache/ \
-	--volume=gadget-build-output:/opt/output \
-	--volume=${IMAGE_DIR}:/opt/output/images \
-	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
-	--name=gadget-build-task \
-	-w="/opt/gadget-os-proto" \
-	${LOCAL_ENV} \
-	${INTERACTIVE} \
-	${GADGET_CONTAINER} \
-	${task}
+if [ -n "${no_docker}" ]; then
+	IMAGE_DIR=/opt/output/images
+	BR2_DL_DIR=/opt/dlcache OUTPUT_DIR=/opt/output ${task}
+	echo "NO DOCKER"
+else
+	echo "Docker enabled :/"
+	docker run \
+		--rm \
+		--env BR2_DL_DIR=/opt/dlcache/ \
+		--volume=${DL_CACHE_VOL}:/opt/dlcache/ \
+		--volume=${BUILD_OUTPUT_VOL}:/opt/output \
+		--volume=${IMAGE_DIR}:/opt/output/images \
+		--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+		--volume=${GADGET_DIR}/local:/local \
+		--volume=${TMP_VOL}:/tmp \
+		--name=gadget-build-task \
+		-w="/opt/gadget-os-proto" \
+		${SSH_FORWARDING} \
+		${LOCAL_ENV} \
+		${INTERACTIVE} \
+		${GADGET_CONTAINER} \
+		${task}
+fi
 
-
-#	--env BR2_CCACHE_DIR=/opt/ccache/ \
-#	--volume=gadget-build-ccache:/opt/ccache/ \
+if [ -n "${SSH_KEY_DIR}" ]; then
+	kill -TERM ${SSH_AGENT_PID}
+fi
