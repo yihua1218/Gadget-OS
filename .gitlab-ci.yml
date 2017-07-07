@@ -41,8 +41,8 @@ build:
     - tar -czf dlcache.tar.gz /opt/dlcache
     - tar -czf build.tar.gz /opt/output/build
     - tar -czf gadget-os-proto.tar.gz /opt/gadget-os-proto
-    - tar -czf local.tar.gz /local
-    - tar -czf tmp.tar.gz /tmp
+#    - tar -czf local.tar.gz /local
+#    - tar -czf tmp.tar.gz /tmp
   artifacts:
     expire_in: 2 days
     when: always
@@ -51,8 +51,8 @@ build:
       - dlcache.tar.gz
       - build.tar.gz
       - gadget-os-proto.tar.gz
-      - local.tar.gz
-      - tmp.tar.gz
+#      - local.tar.gz
+#      - tmp.tar.gz
 
 artifact_image:
   image: docker:latest
