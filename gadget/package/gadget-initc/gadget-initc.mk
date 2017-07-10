@@ -5,7 +5,7 @@
 ################################################################################
 
 GADGET_INITC_VERSION = unstable
-GADGET_INITC_SITE = ssh://git@ntc.githost.io/nextthingco/gadgetcli
+GADGET_INITC_SITE = https://github.com/nextthingco/gadgetcli
 GADGET_INITC_SITE_METHOD = git
 
 GADGET_INITC_DEPENDENCIES = host-go
