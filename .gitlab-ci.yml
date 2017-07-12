@@ -1,7 +1,11 @@
 image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
 
+services:
+  - docker:dind
+
 stages:
   - build
+  - artifact_image
   - howitzer
   - upload
 
@@ -39,6 +43,23 @@ build:
     when: always
     paths:
       - output/images/*
+      - /opt/dlcache
+      - /opt/output/build
+      - /opt/gadget-os-proto
+      - /local
+      - /tmp
+
+artifact_image:
+  image: docker:latest
+  stage: artifact_image
+  tags: [aws-auto-runner]
+  dependencies:
+    - build
+  script:
+    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nCOPY /opt/dlcache /opt/dlcache\nCOPY /opt/output/build /opt/output/build\nCOPY /opt/gadget-os-proto /opt/gadget-os-proto\nCOPY /local /local\nCOPY /tmp /tmp\n" > Dockerfile
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
+    - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
 
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master

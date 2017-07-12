@@ -49,9 +49,13 @@ if [ -n "${SSH_KEY_DIR}" ]; then
 fi
 
 if [ -n "${no_docker}" ]; then
+	echo "NO DOCKER"
+	echo "##### /opt/cache ########"
+    ls -ltrha /opt/dlcache
+	echo "##### /opt/output/build ########"
+    ls -ltrha /opt/output/build
 	IMAGE_DIR=/opt/output/images
 	BR2_DL_DIR=/opt/dlcache OUTPUT_DIR=/opt/output ${task}
-	echo "NO DOCKER"
 else
 	echo "Docker enabled :/"
 	docker run \
