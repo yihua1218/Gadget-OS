@@ -38,16 +38,21 @@ build:
     - ls /opt/output/images
     - mkdir -p output
     - mv /opt/output/images output/images
+    - tar -czf dlcache.tar.gz /opt/dlcache
+    - tar -czf build.tar.gz /opt/output/build
+    - tar -czf gadget-os-proto.tar.gz /opt/gadget-os-proto
+    - tar -czf local.tar.gz /local
+    - tar -czf tmp.tar.gz /tmp
   artifacts:
     expire_in: 2 days
     when: always
     paths:
       - output/images/*
-      - /opt/dlcache
-      - /opt/output/build
-      - /opt/gadget-os-proto
-      - /local
-      - /tmp
+      - dlcache.tar.gz
+      - build.tar.gz
+      - gadget-os-proto.tar.gz
+      - local.tar.gz
+      - tmp.tar.gz
 
 artifact_image:
   image: docker:latest
@@ -56,7 +61,7 @@ artifact_image:
   dependencies:
     - build
   script:
-    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nCOPY /opt/dlcache /opt/dlcache\nCOPY /opt/output/build /opt/output/build\nCOPY /opt/gadget-os-proto /opt/gadget-os-proto\nCOPY /local /local\nCOPY /tmp /tmp\n" > Dockerfile
+    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nADD dlcache.tar.gz /\nADD build.tar.gz /\nADD gadget-os-proto.tar.gz /\nADD local.tar.gz /\nADD tmp.tar.gz /\n" > Dockerfile
     - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
     - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
     - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
