@@ -10,9 +10,7 @@ echo -e "\nUPDATER\n"
 
 [[ ! -x $(which head) ]] && fatal "ERROR: cannot find head"
 [[ ! -x $(which curl) ]] && fatal "ERROR: cannot find curl"
-[[ ! -x $(which ubiupdatevol) ]] && fatal "ERROR: cannot find ubiupdatevol"
-[[ ! -x $(which get_active_slot) ]] && fatal "ERROR: cannot find get_active_slot"
-[[ ! -x $(which get_inactive_slot) ]] && fatal "ERROR: cannot find get_inactive_slot"
+[[ ! -x $(which update_volume) ]] && fatal "ERROR: cannot find update_volume"
 
 MANIFEST="$1"
 MANIFEST_DIR="$(dirname "${MANIFEST}")"
@@ -31,22 +29,6 @@ echo "OK"
 
 [[ -z "${cfg_system_ca_chain}" ]] && fatal "ERROR: '$SYSTEM_CFG' is missing ca_chain setting"
 
-ACTIVE=$(get_active_slot)
-INACTIVE=$(get_inactive_slot)
-
-[[ -z "$ACTIVE" ]]   && fatal "ERROR: cannot get active slot"
-[[ -z "$INACTIVE" ]] && fatal "ERROR: cannot get inactive slot"
-
-echo
-echo "active slot: ${ACTIVE}"
-echo "inactive slot: ${INACTIVE}"
-
-for x in kernel rootfs fdt; do
-    eval "${x}_dest=\$sys_slot_${INACTIVE}_${x}"
-
-    [[ -z "${x}_dest" ]] && fatal "ERROR: no destination for '${x}'"
-done
-
 echo -n "Reading ${MANIFEST}..."
 artifacts="$(jq -r '.Artifacts[] | "\(.Name)"' <"${MANIFEST}")"
 [[ -z "$artifacts" ]] && fatal "ERROR: cannot read artifacts"
@@ -57,36 +39,29 @@ updates_applied=0
 # APPLY UPDATE
 for a in $artifacts; do
     # TODO: make evil eval less evil
-    eval "dest=\$${a}_dest"
     eval "file=\$${a}_file"
     eval "size=\$${a}_size"
     eval "checksum=\$${a}_checksum"
 
     [[ -z "$size" ]] && fatal "ERROR: invalid file size specified in manifest"
     [[ "$size" -le "0" ]] && fatal "ERROR: invalid file size specified in manifest"
-    [[ -z "$dest" ]] && fatal "ERROR: destination empty"
     [[ -z "$checksum" ]] && fatal "ERROR: checksum empty"
     [[ -z "$file" ]] && fatal "ERROR: invalid URL"
 
-    ubivol=${dest##*/}
 
     echo -n "Flashing $a..."
-    ! curl --cacert "${cfg_system_ca_chain}" -s "${file}" | ubiupdatevol ${dest} - -s ${size} && fatal
-    ubiupdateflag=$(cat /sys/class/ubi/$ubivol/upd_marker)
-    [[ -z "$ubiupdateflag" ]] && fatal "ERROR: cannot read $ubiupdateflag"
-    [[ "$ubiupdateflag" != "0" ]] && fatal "ERROR: ubi update not complete"
-    echo OK
-
-    echo -n "Verifiying..."
-    checksum2=$(cat $dest |head -c${size} |sha256sum)
-    checksum2=${checksum2%% *}
-    [[ -z "$checksum2" ]] && fatal "ERROR: cannot calculate checksum"
-    [[ "$checksum" != "$checksum2" ]] && fatal "ERROR: $checksum != $checksum2"
-    echo OK
+    ! curl --cacert "${cfg_system_ca_chain}" -s "${file}" | update_volume ${a} ${size} ${checksum} && fatal
 
     updates_applied=$((updates_applied+1))
 done
-[[ "$size" -le "0" ]] && fatal "ERROR: no updates applied"
+# TODO: verify that exact number of updates has been applied!
+[[ "$updates_applied" -le "0" ]] && fatal "ERROR: no updates applied"
+
+ACTIVE=$(get_active_slot)
+INACTIVE=$(get_inactive_slot)
+
+[[ -z "$ACTIVE" ]]   && fatal "ERROR: cannot get active slot"
+[[ -z "$INACTIVE" ]] && fatal "ERROR: cannot get inactive slot"
 
 echo
 echo -n "Set active slot: $INACTIVE..."
