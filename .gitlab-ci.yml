@@ -56,14 +56,7 @@ artifact_image:
   dependencies:
     - build
   script:
-    - echo -e "\
-FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\
-\n\
-COPY /opt/dlcache /opt/dlcache\n\
-COPY /opt/output/build /opt/output/build\n\
-COPY /opt/gadget-os-proto /opt/gadget-os-proto\n\
-COPY /local /local\n\
-COPY /tmp /tmp\n\" > Dockerfile
+    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nCOPY /opt/dlcache /opt/dlcache\n\COPY /opt/output/build /opt/output/build\nCOPY /opt/gadget-os-proto /opt/gadget-os-proto\nCOPY /local /local\nCOPY /tmp /tmp\n" > Dockerfile
     - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
     - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
     - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
