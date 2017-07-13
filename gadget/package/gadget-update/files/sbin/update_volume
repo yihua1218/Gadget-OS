@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# include script lib
+SCRIPTDIR="$( cd "$( dirname "$0" )" && pwd )"
+. "$SCRIPTDIR/gadget_update_lib"
+
+mutex /var/run/updater
+
+echo -e "\nUPDATE_VOLUME\n"
+
+x=${1:?ERROR no destination given}
+size=${2:?ERROR no size given}
+checksum=${3:?ERROR no checksum given}
+
+[[ ! -x $(which ubiupdatevol) ]] && fatal "ERROR: cannot find ubiupdatevol"
+[[ ! -x $(which get_active_slot) ]] && fatal "ERROR: cannot find get_active_slot"
+[[ ! -x $(which get_inactive_slot) ]] && fatal "ERROR: cannot find get_inactive_slot"
+
+SYSTEM_CFG="/etc/gadget-update/system.cfg"
+[[ -z "${SYSTEM_CFG}" ]] && fatal "ERROR: SYSTEM_CFG is not set"
+echo -n "Reading system configuration..."
+[[ ! -f "${SYSTEM_CFG}" ]] && fatal "ERROR: cannot read \"${SYSTEM_CFG}\""
+! read_cfg sys "${SYSTEM_CFG}" && fatal
+echo "OK"
+
+ACTIVE=$(get_active_slot)
+INACTIVE=$(get_inactive_slot)
+
+[[ -z "$ACTIVE" ]]   && fatal "ERROR: cannot get active slot"
+[[ -z "$INACTIVE" ]] && fatal "ERROR: cannot get inactive slot"
+
+echo
+echo "active slot: ${ACTIVE}"
+echo "inactive slot: ${INACTIVE}"
+
+eval "${x}_dest=\$sys_slot_${INACTIVE}_${x}"
+[[ -z "${x}_dest" ]] && fatal "ERROR: no destination for '${x}'"
+    
+eval "dest=\$${x}_dest"
+[[ -z "$dest" ]] && fatal "ERROR: destination empty"
+
+ubivol=${dest##*/}
+
+! ubiupdatevol ${dest} - -s ${size} && fatal
+
+ubiupdateflag=$(cat /sys/class/ubi/$ubivol/upd_marker)
+[[ -z "$ubiupdateflag" ]] && fatal "ERROR: cannot read $ubiupdateflag"
+[[ "$ubiupdateflag" != "0" ]] && fatal "ERROR: ubi update not complete"
+echo OK
+
+echo -n "Verifiying..."
+checksum2=$(cat $dest |head -c${size} |sha256sum)
+checksum2=${checksum2%% *}
+[[ -z "$checksum2" ]] && fatal "ERROR: cannot calculate checksum"
+[[ "$checksum" != "$checksum2" ]] && fatal "ERROR: $checksum != $checksum2"
+echo OK
+
+
