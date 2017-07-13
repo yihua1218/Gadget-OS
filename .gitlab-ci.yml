@@ -38,9 +38,9 @@ build:
     - ls /opt/output/images
     - mkdir -p output
     - mv /opt/output/images output/images
-    - tar -czf dlcache.tar.gz /opt/dlcache
-    - tar -czf build.tar.gz /opt/output/build
-    - tar -czf gadget-os-proto.tar.gz /opt/gadget-os-proto
+#    - tar -czf dlcache.tar.gz /opt/dlcache
+#    - tar -czf build.tar.gz /opt/output/build
+#    - tar -czf gadget-os-proto.tar.gz /opt/gadget-os-proto
 #    - tar -czf local.tar.gz /local
 #    - tar -czf tmp.tar.gz /tmp
   artifacts:
