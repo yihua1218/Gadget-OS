@@ -1,11 +1,11 @@
 image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
 
-services:
-  - docker:dind
+#services:
+#  - docker:dind
 
 stages:
   - build
-  - artifact_image
+#  - artifact_image
   - howitzer
   - upload
 
@@ -48,23 +48,23 @@ build:
     when: always
     paths:
       - output/images/*
-      - dlcache.tar.gz
-      - build.tar.gz
-      - gadget-os-proto.tar.gz
+#      - dlcache.tar.gz
+#      - build.tar.gz
+#      - gadget-os-proto.tar.gz
 #      - local.tar.gz
 #      - tmp.tar.gz
 
-artifact_image:
-  image: docker:latest
-  stage: artifact_image
-  tags: [aws-auto-runner]
-  dependencies:
-    - build
-  script:
-    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nADD dlcache.tar.gz /\nADD build.tar.gz /\nADD gadget-os-proto.tar.gz /\nADD local.tar.gz /\nADD tmp.tar.gz /\n" > Dockerfile
-    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-    - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
-    - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
+#artifact_image:
+#  image: docker:latest
+#  stage: artifact_image
+#  tags: [aws-auto-runner]
+#  dependencies:
+#    - build
+#  script:
+#    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nADD dlcache.tar.gz /\nADD build.tar.gz /\nADD gadget-os-proto.tar.gz /\nADD local.tar.gz /\nADD tmp.tar.gz /\n" > Dockerfile
+#    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+#    - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
+#    - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
 
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master
