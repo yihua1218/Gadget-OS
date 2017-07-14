@@ -91,10 +91,12 @@ echo "######################"
 echo "## copying data out ##"
 echo "######################"
 echo "creating tar file..."
+docker exec ${CONTAINER_NAME} mv /data/gadget.yml /
+docker exec ${CONTAINER_NAME} rmdir /data
 docker exec ${CONTAINER_NAME} tar cf /output/inject.tar --ignore-failed-read -C / \
 /etc/docker \
 /var/lib/docker \
-/var/lib/gadget 
+/gadget.yml
 cp ${OUTPUT_DIR}/inject.tar output/images/
 
 echo
