@@ -3,6 +3,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG en_US.utf8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.utf8
+
 RUN apt update && \
 	apt -y upgrade && \
 	apt -y install wget \
@@ -18,7 +19,8 @@ RUN apt update && \
 	ncurses-dev \
 	python \
 	android-tools-fsutils \
-	lzop && \
+	lzop \
+	sudo && \
 	rm -rf /var/lib/apt-lists/* && \
 	locale-gen en_US.UTF-8 && \
 	echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
@@ -26,5 +28,9 @@ RUN apt update && \
 	make -C /opt/sunxi-tools sunxi-nand-image-builder && \
 	cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin && \
 	mkdir -p /opt/buildroot && \
+	mkdir -p /opt/output && \
+	mkdir -p /opt/dlcache && \
 	wget -P /opt "https://github.com/buildroot/buildroot/archive/2017.05.tar.gz" && \
 	tar -C /opt/buildroot -xzf /opt/2017.05.tar.gz --strip-components=1
+
+RUN echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers

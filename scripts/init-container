@@ -25,3 +25,31 @@ docker inspect ${GADGET_CONTAINER} 2>/dev/null >/dev/null || docker build -f scr
 docker volume inspect "${BUILD_OUTPUT_VOL}" 2>/dev/null >/dev/null || docker volume create --name "${BUILD_OUTPUT_VOL}"
 docker volume inspect "${DL_CACHE_VOL}"  2>/dev/null >/dev/null || docker volume create --name "${DL_CACHE_VOL}"
 docker volume inspect "${TMP_VOL}"  2>/dev/null >/dev/null || docker volume create --name "${TMP_VOL}"
+
+GADGET_DIR="$(pwd)/"
+IMAGE_DIR="$(pwd)/output/images"
+
+if [ -z $(id -u $USER) ] || [ ! -f /etc/passwd ]; then
+  echo "Couldn't pass USER credentials into container, leaving artifact ownership as-is"
+  exit 0
+fi
+
+docker run \
+	--rm \
+	--env BR2_DL_DIR=/opt/dlcache/ \
+	--volume=${DL_CACHE_VOL}:/opt/dlcache/ \
+	--volume=${BUILD_OUTPUT_VOL}:/opt/output \
+	--volume=${IMAGE_DIR}:/opt/output/images \
+	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+	--volume=${GADGET_DIR}/local:/local \
+	--volume=${TMP_VOL}:/tmp \
+	--name=gadget-build-task \
+	--user=$(id -u $USER):$(id -g $USER) \
+	--volume=/etc/group:/etc/group:ro \
+	--volume=/etc/passwd:/etc/passwd:ro \
+	-w="/opt/gadget-os-proto" \
+	${SSH_FORWARDING} \
+	${LOCAL_ENV} \
+	${INTERACTIVE} \
+	${GADGET_CONTAINER} \
+	/bin/sh -c "sudo chown -R $(id -u $USER):$(id -g $USER) /opt"
