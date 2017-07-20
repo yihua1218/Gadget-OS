@@ -10,6 +10,8 @@ export GADGET_ADDR=127.0.0.1:$SSH_PORT
 
 PUBLIC_KEY="${GADGETOS_DIR}/gadget/package/gadget-setup-ssh-key/files/id_rsa.pub"
 
+OS=$(uname -s)
+
 TMP_DIR=$(mktemp -d /tmp/gadget-inject-project-XXXXXX)
 
 PROJECT_DIR="${PROJECT_DIR:-$1}"
@@ -45,11 +47,13 @@ echo "OUTPUT_DIR=$OUTPUT_DIR"
 [[ ! -x "$(which docker)" ]] && echo "ERROR: cannot find docker" && exit 1
 [[ ! -x "$(which gadget)" ]] && echo "ERROR: cannot find gadget" && exit 1
 
+if [[ "${OS}" == "Linux" ]]; then
 echo
 echo "##################################################################################"
 echo "## making sure the overlay fs module is loaded (might require passord for sudo) ##"
 echo "##################################################################################"
 ! lsmod |grep overlay -q && ! sudo modprobe overlay && echo "ERROR: cannot load module 'overlay'" && exit 1 || echo OK
+fi
 
 echo
 echo "###############################################"
