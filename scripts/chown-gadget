@@ -1,0 +1,32 @@
+#!/bin/bash
+
+## Change ownership of the artifacts if on Linux/Mac
+
+if [ -z $(id -u $USER) ] || [ -z $(id -g $USER) ]; then
+
+  echo "Couldn't pass USER credentials into container, leaving artifact ownership as-is"
+
+else
+
+docker run \
+	--rm \
+	--env BR2_DL_DIR=/opt/dlcache/ \
+	--env USER_ID="$(id -u $USER)" \
+	--env USER_GR="$(id -g $USER)" \
+	--volume=${DL_CACHE_VOL}:/opt/dlcache/ \
+	--volume=${BUILD_OUTPUT_VOL}:/opt/output \
+	--volume=${IMAGE_DIR}:/opt/output/images \
+	--volume=${GADGET_DIR}:/opt/gadget-os-proto \
+	--volume=${GADGET_DIR}/local:/local \
+	--volume=${TMP_VOL}:/tmp \
+	--name=gadget-build-task \
+	--volume=/etc/group:/etc/group:ro \
+	--volume=/etc/passwd:/etc/passwd:ro \
+	-w="/opt/gadget-os-proto" \
+	${SSH_FORWARDING} \
+	${LOCAL_ENV} \
+	${INTERACTIVE} \
+	${GADGET_CONTAINER} \
+	/bin/sh -c "chown -R \$USER_ID:\$USER_GR /opt"
+
+fi

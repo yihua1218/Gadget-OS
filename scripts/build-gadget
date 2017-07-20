@@ -74,6 +74,9 @@ else
 		${INTERACTIVE} \
 		${GADGET_CONTAINER} \
 		${task}
+
+	. ${SCRIPT_DIR}/chown-gadget
+
 fi
 
 if [ -n "${SSH_KEY_DIR}" ]; then

@@ -19,8 +19,7 @@ RUN apt update && \
 	ncurses-dev \
 	python \
 	android-tools-fsutils \
-	lzop \
-	sudo && \
+	lzop && \
 	rm -rf /var/lib/apt-lists/* && \
 	locale-gen en_US.UTF-8 && \
 	echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
@@ -32,5 +31,3 @@ RUN apt update && \
 	mkdir -p /opt/dlcache && \
 	wget -P /opt "https://github.com/buildroot/buildroot/archive/2017.05.tar.gz" && \
 	tar -C /opt/buildroot -xzf /opt/2017.05.tar.gz --strip-components=1
-
-RUN echo "%sudo ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
