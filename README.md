@@ -49,13 +49,13 @@ https://docs.docker.com/docker-for-mac/
 
 #### Get gadgetos source code
 ```
-git clone https://github.com/nextthingco/gadget-buildroot
-cd gadget-buildroot
+git clone https://github.com/NextThingCo/Gadget-OS.git
+cd Gadget-OS
 ```
 
 #### Create docker image for building gadgetos
 ```
-scripts/build-container
+scripts/init-container
 ```
 
 On macOS, you'll need to launch the Docker application from your Applications folder before you can run these scripts. This can take about 10-15 minutes, depending on your computer.
@@ -82,7 +82,7 @@ scripts/build-gadget make linux-nconfig
 Now you are ready to build!
 
 ```
-scripts/build-gadget make -s
+scripts/build-gadget make
 ```
 
 This can take an hour or more.
@@ -97,48 +97,4 @@ Hold down the fel button and power up the Dev Board and
 ```
 scripts/flash-gadget
 ```
-The image will flash to the CHIP Pro. Once flashing has finished, you can connect via UART and start using it.
-
-#### Alternatively
-If the dev kit already has a gadget OS on it and you are re-flashing, boot CHIP Pro, then open a terminal. Use the command:
-```
-gadget-enter-flashing-mode
-```
-This will reboot into a flashing mode. From your computer's command line in the gadget-os-proto docker, run the flash script:
-```
-scripts/flash-gadget
-```
-It will complaing that FEL device is not found, then after a few seconds, begin flashing from fastboot.
-
-#### Update the OS and Re-flash
-
-If the repo is updated and you want to reflash, from your local repo directory, you can use the appropriate arguments to `make` :
-```
-git pull
-scripts/build-gadget make gadget-init-scripts-reconfigure all # for default
-scripts/build-gadget make demo-blinkenlights-reconfigure all # ... blinkenlights
-scripts/build-gadget make demo-micrecorder-reconfigure all # ... micrecorder
-scripts/build-gadget make demo-wirelessap-reconfigure all # ... wirelessap
-```
-
-Then try the "Alternatively" procedure above to reflash.
-
-## Try it!
-
-There are some examples on the system you just flashed.
-
-#### Blinkenlights
-
-Try the blinking lights example. From CHIP Pro's prompt:
-```
-blink-leds
-```
-This blinks the 8 LEDs on CHIP's GPIO in various patterns.
-
-#### VU meter
-
-Now try the VU meter example
-```
-/opt/bin/vu-meter
-```
-Scream loudly, speak softly, tap the mics, and MAKE SOME NOISE, SPORTSFANS!. You'll see the LEDs light, proporitional to the volume of the noise.
+The image will flash to the CHIP Pro. Once flashing has finished, reboot your device. You can then connect via UART and start using it.

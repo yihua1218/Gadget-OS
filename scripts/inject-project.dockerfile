@@ -13,5 +13,6 @@ RUN ln -s /data/root /root
 RUN ln -s $(which docker) /usr/bin/docker
 
 ADD authorized_keys /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/authorized_keys
 
 CMD /usr/sbin/sshd -D & dockerd --storage-driver overlay2

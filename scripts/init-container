@@ -25,3 +25,8 @@ docker inspect ${GADGET_CONTAINER} 2>/dev/null >/dev/null || docker build -f scr
 docker volume inspect "${BUILD_OUTPUT_VOL}" 2>/dev/null >/dev/null || docker volume create --name "${BUILD_OUTPUT_VOL}"
 docker volume inspect "${DL_CACHE_VOL}"  2>/dev/null >/dev/null || docker volume create --name "${DL_CACHE_VOL}"
 docker volume inspect "${TMP_VOL}"  2>/dev/null >/dev/null || docker volume create --name "${TMP_VOL}"
+
+GADGET_DIR="$(pwd)/"
+IMAGE_DIR="$(pwd)/output/images"
+
+. ${SCRIPT_DIR}/chown-gadget
