@@ -27,6 +27,6 @@ docker run \
 	${LOCAL_ENV} \
 	${INTERACTIVE} \
 	${GADGET_CONTAINER} \
-	/bin/sh -c "chown -R \$USER_ID:\$USER_GR /opt"
+	/bin/sh -c "chown \$USER_ID:\$USER_GR /opt/gadget-os-proto/output && chown -R \$USER_ID:\$USER_GR /opt/output/images && chown -R \$USER_ID:\$USER_GR /local"
 
 fi
