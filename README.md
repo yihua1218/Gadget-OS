@@ -26,7 +26,11 @@ popd
 #### macOS:
 ```
 # get fastboot
-brew install android-platform-tools
+brew tap caskroom/cask
+brew cask install android-platform-tools
+
+# install libusb
+brew install libusb
 
 # get sunxi-fel
 git clone https://github.com/linux-sunxi/sunxi-tools.git
