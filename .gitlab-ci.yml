@@ -1,7 +1,7 @@
-image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
+image: docker:latest
 
-#services:
-#  - docker:dind
+services:
+  - docker:dind
 
 stages:
   - build
@@ -25,6 +25,7 @@ variables:
   no_docker: "something"
 
 build:
+  image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
   stage: build
   tags: [aws-auto-runner]
   script:
