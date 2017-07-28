@@ -5,7 +5,7 @@ services:
 
 stages:
   - build
-#  - artifact_image
+  - artifact_image
   - howitzer
   - upload
 
@@ -55,22 +55,13 @@ build:
 #      - local.tar.gz
 #      - tmp.tar.gz
 
-#artifact_image:
-#  image: docker:latest
-#  stage: artifact_image
-#  tags: [aws-auto-runner]
-#  dependencies:
-#    - build
-#  script:
-#    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nADD dlcache.tar.gz /\nADD build.tar.gz /n" > Dockerfile
-#    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-#    - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
-#    - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
-#  artifacts:
-#    expire_in: 20 minutes
-#    when: always
-#    paths:
-#      - output/images/*
+artifact-image:
+  stage: artifact-image
+  tags: [aws-auto-runner]
+  script:
+    - apk update && apk add git coreutils bash
+    - docker login -u ${BUILDER_UN} -p ${BUILDER_PW}
+    - /bin/bash -ex ./gen-dockerfiles.sh
 
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master
