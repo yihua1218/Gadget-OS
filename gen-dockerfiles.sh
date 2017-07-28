@@ -21,12 +21,12 @@ for BOARD in ${BOARDS}; do
 	echo "RUN cd /opt/gadget-os-proto && make ${BOARD}_defconfig && make linux-source" >> ${SCRIPT_DIR}/${BOARD}.Dockerfile
 	
 	# tag and upload board specific docker image
-	docker build -t computermouth/gbgos-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH} -f ${SCRIPT_DIR}/${BOARD}.Dockerfile ${SCRIPT_DIR}
-	docker tag computermouth/gbgos-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH}\
-	 computermouth/gbgos-${BOARD}-${BRANCH}:latest
+	docker build -t nextthingco/gadget-build-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH} -f ${SCRIPT_DIR}/${BOARD}.Dockerfile ${SCRIPT_DIR}
+	docker tag nextthingco/gadget-build-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH}\
+	 nextthingco/gadget-build-${BOARD}-${BRANCH}:latest
 
-	docker push computermouth/gbgos-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH}
-	docker push computermouth/gbgos-${BOARD}-${BRANCH}:latest
+	docker push nextthingco/gadget-build-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH}
+	docker push nextthingco/gadget-build-${BOARD}-${BRANCH}:latest
 	
 	rm ${SCRIPT_DIR}/${BOARD}.Dockerfile
 	
