@@ -55,8 +55,8 @@ build:
 #      - local.tar.gz
 #      - tmp.tar.gz
 
-artifact-image:
-  stage: artifact-image
+artifact_image:
+  stage: artifact_image
   tags: [aws-auto-runner]
   script:
     - apk update && apk add git coreutils bash
