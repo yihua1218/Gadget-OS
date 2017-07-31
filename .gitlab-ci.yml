@@ -86,12 +86,7 @@ upload:
     - mv output /upload/output
     - cd /upload
     - ls -al /upload/output/images
-    - ci-s3-upload
-#      ${ARTIFACT_0}
-#      ${ARTIFACT_1}
-#      ${ARTIFACT_2}
-#      ${ARTIFACT_3}
-      ${ARTIFACT_4}
+    - ci-s3-upload ${ARTIFACT_4}
   artifacts:
     expire_in: 2 days
     when: always
