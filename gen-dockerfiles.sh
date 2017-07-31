@@ -18,7 +18,7 @@ for BOARD in ${BOARDS}; do
 	
 	cat ${COMMONFILE} > ${SCRIPT_DIR}/${BOARD}.Dockerfile
 	# build board specific dockerfile, download it's kernel source
-	echo "RUN cd /opt/gadget-os-proto && make ${BOARD}_defconfig && make linux-source" >> ${SCRIPT_DIR}/${BOARD}.Dockerfile
+	echo "RUN cd /opt/gadget-os-proto && no_docker=true make ${BOARD}_defconfig && no_docker=true make linux-source" >> ${SCRIPT_DIR}/${BOARD}.Dockerfile
 	
 	# tag and upload board specific docker image
 	docker build -t nextthingco/gadget-build-${BOARD}-${BRANCH}:${TIMESTAMP}-${HASH} -f ${SCRIPT_DIR}/${BOARD}.Dockerfile ${SCRIPT_DIR}
