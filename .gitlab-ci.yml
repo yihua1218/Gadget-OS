@@ -5,9 +5,9 @@ services:
 
 stages:
   - build
-  - artifact_image
   - howitzer
   - upload
+  - artifact_image
 
 variables:
   GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:testing
@@ -57,14 +57,6 @@ build:
 #      - local.tar.gz
 #      - tmp.tar.gz
 
-artifact_image:
-  stage: artifact_image
-  tags: [aws-auto-runner]
-  script:
-    - apk update && apk add git coreutils bash
-    - docker login -u ${BUILDER_UN} -p ${BUILDER_PW}
-    - /bin/bash -ex ./gen-dockerfiles.sh
-
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master
   stage: howitzer
@@ -105,3 +97,11 @@ upload:
     when: always
     paths:
       - /upload/*
+
+artifact_image:
+  stage: artifact_image
+  tags: [aws-auto-runner]
+  script:
+    - apk update && apk add git coreutils bash
+    - docker login -u ${BUILDER_UN} -p ${BUILDER_PW}
+    - /bin/bash -ex ./gen-dockerfiles.sh
