@@ -14,10 +14,10 @@ variables:
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
   NAND_TYPE: Toshiba_512M_SLC
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${GHVAR_UPLOAD_CONTAINER_BRANCH}
-  ARTIFACT_0: output/images/rootfs.ubi.sparse
-  ARTIFACT_1: output/images/spl-40000-1000-100.bin
-  ARTIFACT_2: output/images/uboot-40000.bin
-  ARTIFACT_3: output/images/uboot.script
+#  ARTIFACT_0: output/images/rootfs.ubi.sparse
+#  ARTIFACT_1: output/images/spl-40000-1000-100.bin
+#  ARTIFACT_2: output/images/uboot-40000.bin
+#  ARTIFACT_3: output/images/uboot.script
   ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_PIPELINE_ID}-${NAND_TYPE}.chp
   GHVAR_SLACK_CHANNEL: ${GHVAR_SLACK_CHANNEL}
   GHVAR_SLACK_HOOK: ${GHVAR_SLACK_HOOK}
@@ -87,10 +87,10 @@ upload:
     - cd /upload
     - ls -al /upload/output/images
     - ci-s3-upload
-      ${ARTIFACT_0}
-      ${ARTIFACT_1}
-      ${ARTIFACT_2}
-      ${ARTIFACT_3}
+#      ${ARTIFACT_0}
+#      ${ARTIFACT_1}
+#      ${ARTIFACT_2}
+#      ${ARTIFACT_3}
       ${ARTIFACT_4}
   artifacts:
     expire_in: 2 days
