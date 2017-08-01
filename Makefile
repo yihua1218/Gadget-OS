@@ -42,7 +42,11 @@ docker run \
 ${INTERACTIVE} \
 ${GADGET_CONTAINER}
 else
+$(info PWD=$(PWD) )
+$(info CURDIR=$(CURDIR) )
+$(info "NO DOCKER")
 BR2_EXTERNAL?=$(CURDIR)
+export BR2_EXTERNAL
 DOCKER =
 endif
 
@@ -50,6 +54,7 @@ all:
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR)
 
 %_defconfig:
+	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) $@
 
 %:
