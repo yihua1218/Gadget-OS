@@ -45,7 +45,7 @@ else
 $(info PWD=$(PWD) )
 $(info CURDIR=$(CURDIR) )
 $(info "NO DOCKER")
-BR2_EXTERNAL?=$(CURDIR)
+BR2_EXTERNAL?=$(CURDIR)/gadget
 export BR2_EXTERNAL
 DOCKER =
 endif
