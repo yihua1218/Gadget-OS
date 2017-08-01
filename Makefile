@@ -2,11 +2,19 @@ GADGET_DIR = "$(PWD)/"
 IMAGE_DIR = "$(PWD)/output/images"
 
 ID=$(shell cat scripts/id)
+ifeq ($(strip $(ID)),)
+$(error scripts/id not found! please run `scripts/init-container` )
+endif
 
 GADGET_CONTAINER = gadget-build-container
 BUILD_OUTPUT_VOL = "gadget-build-output-${ID}"
 DL_CACHE_VOL     = "gadget-build-dlcache-${ID}"
 TMP_VOL          = "gadget-build-tmp-${ID}"
+
+TOP=$(CURDIR)
+OUTPUT_DIR?=/opt/output
+BR_DIR?=/opt/buildroot
+BR2_EXTERNAL?=/opt/gadget-os-proto/gadget
 
 ifneq ($(strip $(TERM)),)
 INTERACTIVE = -it
@@ -22,6 +30,7 @@ echo "------------------------------------------------------------"; \
 docker run \
 --rm \
 --env BR2_DL_DIR=/opt/dlcache/ \
+--env BR2_EXTERNAL=${BR2_EXTERNAL} \
 --volume=${DL_CACHE_VOL}:/opt/dlcache/ \
 --volume=${BUILD_OUTPUT_VOL}:/opt/output \
 --volume=${IMAGE_DIR}:/opt/output/images \
@@ -36,12 +45,6 @@ else
 DOCKER =
 endif
 
-TOP=$(CURDIR)
-OUTPUT_DIR?=/opt/output
-BR_DIR?=/opt/buildroot
-
-export BR2_EXTERNAL=$(CURDIR)/gadget
-
 all:
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR)
 
@@ -53,6 +56,9 @@ all:
 
 nconfig:
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) nconfig
+
+SHELL:
+	@$(DOCKER) /bin/bash
 
 help:
 	@$(foreach b, $(sort $(notdir $(wildcard $(BR2_EXTERNAL_GADGETOS_PATH)/configs/*_defconfig))), \
