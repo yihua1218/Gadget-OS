@@ -1,16 +1,6 @@
 GADGET_DIR = "$(PWD)/"
 IMAGE_DIR = "$(PWD)/output/images"
 
-ID=$(shell cat scripts/id)
-ifeq ($(strip $(ID)),)
-$(error scripts/id not found! please run `scripts/init-container` )
-endif
-
-GADGET_CONTAINER = gadget-build-container
-BUILD_OUTPUT_VOL = "gadget-build-output-${ID}"
-DL_CACHE_VOL     = "gadget-build-dlcache-${ID}"
-TMP_VOL          = "gadget-build-tmp-${ID}"
-
 TOP=$(CURDIR)
 OUTPUT_DIR?=/opt/output
 BR_DIR?=/opt/buildroot
@@ -23,6 +13,16 @@ INTERACTIVE =
 endif
 
 ifeq ($(strip $(no_docker)),)
+ID=$(shell cat scripts/id)
+ifeq ($(strip $(ID)),)
+$(error scripts/id not found! please run `scripts/init-container` )
+endif
+
+GADGET_CONTAINER = gadget-build-container
+BUILD_OUTPUT_VOL = "gadget-build-output-${ID}"
+DL_CACHE_VOL     = "gadget-build-dlcache-${ID}"
+TMP_VOL          = "gadget-build-tmp-${ID}"
+
 DOCKER = \
 echo "------------------------------------------------------------"; \
 echo " Running Docker - hit CTRL-C then CTRL-\ to interrupt"; \
