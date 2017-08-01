@@ -4,7 +4,6 @@ IMAGE_DIR = "$(PWD)/output/images"
 TOP=$(CURDIR)
 OUTPUT_DIR?=/opt/output
 BR_DIR?=/opt/buildroot
-BR2_EXTERNAL?=/opt/gadget-os-proto/gadget
 
 ifneq ($(strip $(TERM)),)
 INTERACTIVE = -it
@@ -22,6 +21,7 @@ GADGET_CONTAINER = gadget-build-container
 BUILD_OUTPUT_VOL = "gadget-build-output-${ID}"
 DL_CACHE_VOL     = "gadget-build-dlcache-${ID}"
 TMP_VOL          = "gadget-build-tmp-${ID}"
+BR2_EXTERNAL?=/opt/gadget-os-proto/gadget
 
 DOCKER = \
 echo "------------------------------------------------------------"; \
@@ -42,6 +42,7 @@ docker run \
 ${INTERACTIVE} \
 ${GADGET_CONTAINER}
 else
+BR2_EXTERNAL?=$(CURDIR)
 DOCKER =
 endif
 
