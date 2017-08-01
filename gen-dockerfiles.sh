@@ -9,7 +9,7 @@ HASH=$(git rev-parse --short=8 HEAD)
 TIMESTAMP=$(date --iso-8601 -d @$(git show -s --format=%ct))
 BRANCH=${CI_BUILD_REF_SLUG}
 
-echo "${BRANCH}" > .branch
+echo "${BRANCH}:${TIMESTAMP}-${HASH}" > .branch
 
 # generating dockerfiles
 echo "# generating dockerfiles"
