@@ -53,6 +53,13 @@ endif
 all:
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR)
 
+gadget_export_linux_defconfig:
+	@$(DOCKER) cp /opt/gadget-os-proto/gadget/board/nextthing/$(BOARD)/configs/linux.config /save/$(BOARD)-linux.config
+
+gadget_edit_linux_defconfig:
+	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
+	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) linux-menuconfig && @$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) linux-update-config
+
 %_defconfig:
 	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) $@
