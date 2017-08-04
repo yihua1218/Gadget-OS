@@ -60,6 +60,10 @@ gadget_edit_linux_defconfig:
 	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) linux-menuconfig && $(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) linux-update-config
 
+gadget_build:
+	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
+	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) $(BOARD)_defconfig && $(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR)
+
 %_defconfig:
 	@echo BR2_EXTERNAL=$(BR2_EXTERNAL)
 	@$(DOCKER) make -C $(BR_DIR) O=$(OUTPUT_DIR) $@
