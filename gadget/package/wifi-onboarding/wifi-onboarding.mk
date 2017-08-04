@@ -24,6 +24,8 @@ endef
 
 define WIFI_ONBOARDING_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/build/linux_arm/wifi-onboarding $(TARGET_DIR)/usr/bin/wifi-onboarding
+	$(INSTALL) -D -m 0644 $(@D)/view $(TARGET_DIR)/usr/lib/wifi-onboarding/view
+	$(INSTALL) -D -m 0644 $(@D)/static $(TARGET_DIR)/usr/lib/wifi-onboarding/static
 endef
 
 #define WIFI_ONBOARDING_INSTALL_INIT_SYSV
