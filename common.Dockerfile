@@ -19,13 +19,17 @@ RUN apt update && \
 	ncurses-dev \
 	python \
 	android-tools-fsutils \
+	libusb-1.0-0-dev \
+	pkg-config \
 	lzop && \
 	rm -rf /var/lib/apt-lists/* && \
 	locale-gen en_US.UTF-8 && \
 	echo 'LANG="en_US.UTF-8"' > /etc/default/locale && \
 	git clone https://github.com/linux-sunxi/sunxi-tools /opt/sunxi-tools && \
-	make -C /opt/sunxi-tools sunxi-nand-image-builder && \
-	cp /opt/sunxi-tools/sunxi-nand-image-builder /usr/local/bin && \
+	make -C /opt/sunxi-tools && \
+	make -C /opt/sunxi-tools misc && \
+	make -C /opt/sunxi-tools install && \
+	make -C /opt/sunxi-tools install-misc && \
 	rm -rf /opt/sunxi-tools && \
 	mkdir -p /opt/buildroot && \
 	mkdir -p /opt/output && \
