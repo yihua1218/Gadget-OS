@@ -19,6 +19,7 @@ RUN apt update && \
 	ncurses-dev \
 	python \
 	android-tools-fsutils \
+	android-tools-fastboot \
 	libusb-1.0-0-dev \
 	pkg-config \
 	lzop && \
