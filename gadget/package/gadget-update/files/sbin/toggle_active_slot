@@ -1,0 +1,12 @@
+#!/bin/sh
+
+ACTIVE=$(get_active_slot)
+INACTIVE=$(get_inactive_slot)
+
+[[ -z "$ACTIVE" ]]   && fatal "ERROR: cannot get active slot"
+[[ -z "$INACTIVE" ]] && fatal "ERROR: cannot get inactive slot"
+
+echo
+echo -n "Set active slot: $INACTIVE..."
+! set_active_slot_uboot $INACTIVE && fatal
+echo "OK"

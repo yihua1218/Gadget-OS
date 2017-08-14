@@ -21,6 +21,7 @@ define GADGET_UPDATE_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 755 $(@D)/sbin/get_active_slot $(TARGET_DIR)/sbin/get_active_slot
 	$(INSTALL) -D -m 755 $(@D)/sbin/get_inactive_slot $(TARGET_DIR)/sbin/get_inactive_slot
 	$(INSTALL) -D -m 755 $(@D)/sbin/set_active_slot_uboot $(TARGET_DIR)/sbin/set_active_slot_uboot
+	$(INSTALL) -D -m 755 $(@D)/sbin/toggle_active_slot $(TARGET_DIR)/sbin/toggle_active_slot
 	$(INSTALL) -D -m 755 $(@D)/sbin/gadget_update_lib $(TARGET_DIR)/sbin/gadget_update_lib
 endef
 
