@@ -66,27 +66,27 @@ On macOS, you'll need to launch the Docker application from your Applications fo
 
 ### Create gadgetos config file
 
-`scripts/build-gadget make chippro_defconfig`
+`make chippro_defconfig`
 
 Creating this config file takes less than a minute.
 
 #### [optional] Customize your configuration
 If you want to add some capabilities to the default rootfs, you can use an ncurses UI to navigate the many options of buildroot:
 ```
-scripts/build-gadget make nconfig
+make nconfig
 ```
 
 #### [optional] Customize your kernel
 If you want to add some capabilities to the kernel, you can use an ncurses UI to navigate the many options:
 ```
-scripts/build-gadget make linux-nconfig
+make linux-nconfig
 ```
 
 ### Make gadgetos
 Now you are ready to build!
 
 ```
-scripts/build-gadget make
+make
 ```
 
 This can take an hour or more.
