@@ -1,6 +1,6 @@
 # gadgetos
 
-## Please note that this is a work in progress release of the source code.
+## Please be advised that GadgetOS will eventually replace [Gadget-buildroot](https://github.com/NextThingCo/gadget-buildroot), however the software and documentation for GadgetOS are under very active, daily development. This is a work in progress release of the source code.
 
 ## Install required build tools
 
@@ -26,7 +26,11 @@ popd
 #### macOS:
 ```
 # get fastboot
-brew install android-platform-tools
+brew tap caskroom/cask
+brew cask install android-platform-tools
+
+# install libusb
+brew install libusb
 
 # get sunxi-fel
 git clone https://github.com/linux-sunxi/sunxi-tools.git
@@ -62,27 +66,27 @@ On macOS, you'll need to launch the Docker application from your Applications fo
 
 ### Create gadgetos config file
 
-`scripts/build-gadget make chippro_defconfig`
+`make chippro_defconfig`
 
 Creating this config file takes less than a minute.
 
 #### [optional] Customize your configuration
 If you want to add some capabilities to the default rootfs, you can use an ncurses UI to navigate the many options of buildroot:
 ```
-scripts/build-gadget make nconfig
+make nconfig
 ```
 
 #### [optional] Customize your kernel
 If you want to add some capabilities to the kernel, you can use an ncurses UI to navigate the many options:
 ```
-scripts/build-gadget make linux-nconfig
+make linux-nconfig
 ```
 
 ### Make gadgetos
 Now you are ready to build!
 
 ```
-scripts/build-gadget make
+make
 ```
 
 This can take an hour or more.

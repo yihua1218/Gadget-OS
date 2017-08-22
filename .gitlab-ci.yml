@@ -1,23 +1,23 @@
-image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
+image: docker:latest
 
-#services:
-#  - docker:dind
+services:
+  - docker:dind
 
 stages:
   - build
-#  - artifact_image
   - howitzer
   - upload
+  - artifact_image
 
 variables:
   GADGET_CONTAINER: ${CI_REGISTRY}/nextthingco/buildroot-development-container:testing
   HOWITZER_CONTAINER: ${CI_REGISTRY}/gadget/howitzer-container:master
   NAND_TYPE: Toshiba_512M_SLC
   UPLOAD_CONTAINER: ${CI_REGISTRY}/nextthingco/ci-tools:${GHVAR_UPLOAD_CONTAINER_BRANCH}
-  ARTIFACT_0: output/images/rootfs.ubi.sparse
-  ARTIFACT_1: output/images/spl-40000-1000-100.bin
-  ARTIFACT_2: output/images/uboot-40000.bin
-  ARTIFACT_3: output/images/uboot.script
+#  ARTIFACT_0: output/images/rootfs.ubi.sparse
+#  ARTIFACT_1: output/images/spl-40000-1000-100.bin
+#  ARTIFACT_2: output/images/uboot-40000.bin
+#  ARTIFACT_3: output/images/uboot.script
   ARTIFACT_4: output/images/${CI_BUILD_REF_SLUG}-chip-pro-${CI_PROJECT_NAME}-b${CI_PIPELINE_ID}-${NAND_TYPE}.chp
   GHVAR_SLACK_CHANNEL: ${GHVAR_SLACK_CHANNEL}
   GHVAR_SLACK_HOOK: ${GHVAR_SLACK_HOOK}
@@ -25,6 +25,7 @@ variables:
   no_docker: "something"
 
 build:
+  image: ntc-registry.githost.io/nextthingco/buildroot-development-container:testing
   stage: build
   tags: [aws-auto-runner]
   script:
@@ -33,8 +34,10 @@ build:
     - echo "${SSH_KEY_SECRET}" > ${SSH_KEY_DIR}/id_rsa
     - echo "${SSH_CONFIG}" > ${SSH_KEY_DIR}/ssh_config
     - chmod 0600 ${SSH_KEY_DIR}/*
-    - scripts/build-gadget make -s chippro_defconfig
-    - scripts/build-gadget make -s
+#    - scripts/build-gadget make -s chippro_defconfig
+#    - scripts/build-gadget make -s
+    - make -s chippro_defconfig
+    - make -s
     - ls /opt/output/images
     - mkdir -p output
     - mv /opt/output/images output/images
@@ -53,23 +56,6 @@ build:
 #      - gadget-os-proto.tar.gz
 #      - local.tar.gz
 #      - tmp.tar.gz
-
-#artifact_image:
-#  image: docker:latest
-#  stage: artifact_image
-#  tags: [aws-auto-runner]
-#  dependencies:
-#    - build
-#  script:
-#    - echo -e "FROM ntc-registry.githost.io/nextthingco/buildroot-development-container:testing\n\nADD dlcache.tar.gz /\nADD build.tar.gz /n" > Dockerfile
-#    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-#    - docker build --pull -t gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID} .
-#    - docker push gadget-os-artifacts:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}-${CI_JOB_ID}
-#  artifacts:
-#    expire_in: 20 minutes
-#    when: always
-#    paths:
-#      - output/images/*
 
 howitzer:
   image: ntc-registry.githost.io/gadget/howitzer-container:master
@@ -100,14 +86,17 @@ upload:
     - mv output /upload/output
     - cd /upload
     - ls -al /upload/output/images
-    - ci-s3-upload
-      ${ARTIFACT_0}
-      ${ARTIFACT_1}
-      ${ARTIFACT_2}
-      ${ARTIFACT_3}
-      ${ARTIFACT_4}
+    - ci-s3-upload ${ARTIFACT_4}
   artifacts:
     expire_in: 2 days
     when: always
     paths:
       - /upload/*
+
+artifact_image:
+  stage: artifact_image
+  tags: [aws-auto-runner]
+  script:
+    - apk update && apk add git coreutils bash
+    - docker login -u ${BUILDER_UN} -p ${BUILDER_PW}
+    - /bin/bash -ex ./gen-dockerfiles.sh
