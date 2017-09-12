@@ -1,6 +1,7 @@
 config BR2_PACKAGE_WIFI_ONBOARDING
 	bool "wifi-onboarding"
 	depends on BR2_PACKAGE_HOST_GO_ARCH_SUPPORTS
+	select BR2_PACKAGE_HOSTAPD
 	help
 	  Headless Wifi Setup
 
