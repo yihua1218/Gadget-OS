@@ -7,6 +7,7 @@ SSH_PORT=27182
 
 # NOTE: this *needs* to be exported because it's read in the gadget sub-process
 export GADGET_ADDR=127.0.0.1:$SSH_PORT
+export GADGET_HOST_ADDR=127.0.0.1
 
 PUBLIC_KEY="${GADGETOS_DIR}/gadget/package/gadget-setup-ssh-key/files/id_rsa.pub"
 
