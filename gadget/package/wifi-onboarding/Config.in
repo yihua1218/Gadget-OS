@@ -6,3 +6,15 @@ config BR2_PACKAGE_WIFI_ONBOARDING
 	  Headless Wifi Setup
 
 	  https://github.com/nextthingco/wifi-onboarding
+
+if BR2_PACKAGE_WIFI_ONBOARDING
+
+config BR2_PACKAGE_WIFI_ONBOARDING_DEFAULT_PORT
+	string ":[PORT] for wifi-onboarding"
+	default ":8080"
+	help
+	  ':1234' will serve on all interfaces at port 1234. String must
+	  include the colon. The server will default to port 8080 if no
+	  string is provided.
+
+endif
