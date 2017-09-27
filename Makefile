@@ -17,7 +17,7 @@ ifeq ($(strip $(ID)),)
 $(error scripts/id not found! please run `scripts/init-container` )
 endif
 
-GADGET_CONTAINER = gadget-build-container
+GADGET_CONTAINER = yihua1218/gadget-build-container
 BUILD_OUTPUT_VOL = "gadget-build-output-${ID}"
 DL_CACHE_VOL     = "gadget-build-dlcache-${ID}"
 TMP_VOL          = "gadget-build-tmp-${ID}"
@@ -38,6 +38,7 @@ docker run \
 --volume=${GADGET_DIR}/local:/local \
 --volume=${TMP_VOL}:/tmp \
 --name=gadget-build-task \
+-p 8222:22 \
 -w="/opt/gadget-os-proto" \
 ${INTERACTIVE} \
 ${GADGET_CONTAINER}
